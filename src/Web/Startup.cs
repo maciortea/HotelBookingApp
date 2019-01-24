@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Infrastructure;
+using Infrastructure.Repositories;
+using ApplicationCore.Interfaces;
+using ApplicationCore.Services;
 
 namespace Web
 {
@@ -35,6 +38,9 @@ namespace Web
 
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddScoped<IReservationRepository, ReservationRepository>();
+            services.AddScoped<IReservationService, ReservationService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
