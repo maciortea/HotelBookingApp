@@ -36,7 +36,7 @@ namespace Web
                 options.UseInMemoryDatabase("HotelRooms"));
             //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<HotelPersonal>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IReservationRepository, ReservationRepository>();

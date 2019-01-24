@@ -6,9 +6,9 @@ namespace ApplicationCore.Entities.ReservationAggregate
 {
     public class Reservation : Entity, IAggregateRoot
     {
-        public long RoomId { get; set; }
-        public Room Room { get; set; } 
-        public Customer Customer { get; set; }
+        public long RoomId { get; private set; }
+        public Room Room { get; private set; } 
+        public Customer Customer { get; private set; }
         public DateTime ReservationDate { get; private set; } = DateTime.Now;
 
         private Reservation()

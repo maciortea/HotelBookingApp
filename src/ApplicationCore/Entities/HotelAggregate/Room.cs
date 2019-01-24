@@ -4,14 +4,10 @@ namespace ApplicationCore.Entities.HotelAggregate
 {
     public class Room : Entity
     {
-        public long HotelId { get; }
-        public int Floor { get; }
-        public string Type { get; }
-        public decimal PricePerNightInDollars { get; }
-
-        private Room()
-        {
-        }
+        public long HotelId { get; private set; }
+        public int Floor { get; private set; }
+        public string Type { get; private set; }
+        public decimal PricePerNightInDollars { get; private set; }
 
         public Room(long hotelId, int floor, string type, decimal pricePerNightInDollars)
         {

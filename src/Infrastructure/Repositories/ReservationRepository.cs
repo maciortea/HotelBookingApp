@@ -15,7 +15,7 @@ namespace Infrastructure.Repositories
 
         public async Task<IReadOnlyCollection<Reservation>> GetAll(long hotelId)
         {
-            return await _db.Reservations.Where(r => r.Room.HotelId == hotelId).ToListAsync();
+            return await _db.Reservations.Include(r => r.Room).Where(r => r.Room.HotelId == hotelId).ToListAsync();
         }
     }
 }

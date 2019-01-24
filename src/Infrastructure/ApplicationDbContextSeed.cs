@@ -2,24 +2,26 @@
 using System.Threading.Tasks;
 using System.Linq;
 using ApplicationCore.Entities.HotelAggregate;
+using ApplicationCore.Entities.ReservationAggregate;
 
 namespace Infrastructure
 {
     public class ApplicationDbContextSeed
     {
-        public static async Task SeedAsync(ApplicationDbContext db, UserManager<IdentityUser> userManager)
+        public static async Task SeedAsync(ApplicationDbContext db, UserManager<HotelPersonal> userManager)
         {
-            await EnsureUser(userManager, "test@domain.com", "P@ssword1");
             long hotelId = await EnsureHotel(db);
             await EnsureRooms(db, hotelId);
+            await EnsureReservations(db, hotelId);
+            await EnsureUser(userManager, "test@domain.com", "P@ssword1", hotelId);
         }
 
-        private static async Task EnsureUser(UserManager<IdentityUser> userManager, string userName, string password)
+        private static async Task EnsureUser(UserManager<HotelPersonal> userManager, string userName, string password, long hotelId)
         {
             var user = await userManager.FindByNameAsync(userName);
             if (user == null)
             {
-                user = new IdentityUser { UserName = userName, Email = userName };
+                user = new HotelPersonal { UserName = userName, Email = userName, HotelId = hotelId };
                 await userManager.CreateAsync(user, password);
             }
         }
@@ -58,6 +60,30 @@ namespace Infrastructure
                 }
 
                 await db.SaveChangesAsync();
+            }
+        }
+
+        private static async Task EnsureReservations(ApplicationDbContext db, long hotelId)
+        {
+            Hotel hotel = await db.Hotels.FindAsync(hotelId);
+            if (hotel != null && !db.Reservations.Any() && hotel.Rooms.Any())
+            {
+                var singleRoom = hotel.Rooms.Where(r => r.Type == "Single").FirstOrDefault();
+                if (singleRoom != null)
+                {
+                    var customer = new Customer("Michael", "Smith", "00444567123");
+                    db.Reservations.Add(new Reservation(singleRoom.Id, customer));
+                }
+                
+                var standardRoom = hotel.Rooms.Where(r => r.Type == "Standard").FirstOrDefault();
+                if (standardRoom != null)
+                {
+                    var customer = new Customer("Vanesa", "Jackson", "00442567188");
+                    db.Reservations.Add(new Reservation(standardRoom.Id, customer));
+                }
+
+                await db.SaveChangesAsync();
+                var tt = db.Reservations.ToList();
             }
         }
 

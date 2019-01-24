@@ -5,10 +5,10 @@ namespace ApplicationCore.Entities.HotelAggregate
 {
     public class Hotel : Entity, IAggregateRoot
     {
-        public string Name { get; }
-        public Address Address { get; }
+        public string Name { get; private set; }
+        public Address Address { get; private set; }
 
-        private readonly List<Room> _rooms;
+        private readonly List<Room> _rooms = new List<Room>();
         public IReadOnlyCollection<Room> Rooms => _rooms.AsReadOnly();
 
         private Hotel()
@@ -19,7 +19,6 @@ namespace ApplicationCore.Entities.HotelAggregate
         {
             Name = name;
             Address = address;
-            _rooms = new List<Room>();
         }
 
         public void AddRoom(Room room)

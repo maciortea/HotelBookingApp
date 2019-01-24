@@ -22,7 +22,7 @@ namespace Web
                 try
                 {
                     var db = services.GetRequiredService<ApplicationDbContext>();
-                    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+                    var userManager = services.GetRequiredService<UserManager<HotelPersonal>>();
                     ApplicationDbContextSeed.SeedAsync(db, userManager).Wait();
                 }
                 catch (Exception ex)

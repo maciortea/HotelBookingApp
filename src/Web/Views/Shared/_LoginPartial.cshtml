@@ -1,7 +1,8 @@
 @using Microsoft.AspNetCore.Identity
+@using Infrastructure
 
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<HotelPersonal> SignInManager
+@inject UserManager<HotelPersonal> UserManager
 
 @if (SignInManager.IsSignedIn(User))
 {
