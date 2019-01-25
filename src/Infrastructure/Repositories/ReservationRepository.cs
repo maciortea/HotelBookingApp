@@ -13,9 +13,15 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public async Task<IReadOnlyCollection<Reservation>> GetAll(long hotelId)
+        public async Task<IReadOnlyCollection<Reservation>> GetAllByHotelId(long hotelId)
         {
             return await _db.Reservations.Include(r => r.Room).Where(r => r.Room.HotelId == hotelId).ToListAsync();
+        }
+
+        public async Task Create(Reservation reservation)
+        {
+            await _db.Reservations.AddAsync(reservation);
+            await _db.SaveChangesAsync();
         }
     }
 }

@@ -16,7 +16,12 @@ namespace ApplicationCore.Services
 
         public async Task<IReadOnlyCollection<Reservation>> ListAll(long hotelId)
         {
-            return await _reservationRepository.GetAll(hotelId);
+            return await _reservationRepository.GetAllByHotelId(hotelId);
+        }
+
+        public async Task Create(Reservation reservation)
+        {
+            await _reservationRepository.Create(reservation);
         }
     }
 }

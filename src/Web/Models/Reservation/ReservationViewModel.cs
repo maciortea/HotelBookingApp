@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Web.Models.Reservation
 {
@@ -8,7 +7,9 @@ namespace Web.Models.Reservation
         [DisplayName("Room type")]
         public string RoomType { get; set; }
 
-        [DisplayName("Reservation date")]
-        public DateTime ReservationDate { get; set; }
+        [DisplayName("Customer")]
+        public string CustomerFullName { get; set; }
+
+        public ReservationPeriodViewModel ReservationPeriod { get; set; }
     }
 }

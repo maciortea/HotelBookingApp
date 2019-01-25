@@ -1,0 +1,33 @@
+﻿@model Web.Models.Reservation.ReservationPeriodViewModel
+
+@{
+    ViewData["Title"] = "Stay period selection";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="SelectStayPeriod">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CheckinDate" class="control-label"></label>
+                <input asp-for="CheckinDate" class="form-control" />
+                <span asp-validation-for="CheckinDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CheckoutDate" class="control-label"></label>
+                <input asp-for="CheckoutDate" class="form-control" />
+                <span asp-validation-for="CheckoutDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Proceed to reservation" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -6,6 +6,7 @@ namespace ApplicationCore.Interfaces
 {
     public interface IReservationRepository
     {
-        Task<IReadOnlyCollection<Reservation>> GetAll(long hotelId);
+        Task<IReadOnlyCollection<Reservation>> GetAllByHotelId(long hotelId);
+        Task Create(Reservation reservation);
     }
 }

@@ -40,6 +40,7 @@ namespace Web
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IReservationRepository, ReservationRepository>();
+            services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IReservationService, ReservationService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -55,7 +56,7 @@ namespace Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Reservation/Error");
                 app.UseHsts();
             }
 
@@ -69,7 +70,7 @@ namespace Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Reservation}/{action=List}/{id?}");
             });
         }
     }
