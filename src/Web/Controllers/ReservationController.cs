@@ -38,11 +38,13 @@ namespace Web.Controllers
 
             var reservations = await _reservationService.ListAll(user.HotelId);
             var model = reservations
-                .Select(r => new ReservationViewModel
+                .Select(r => new ReservationViewModel(DateTime.Today)
                 {
+                    Id = r.Id,
                     CustomerFullName = r.Customer.FullName,
                     RoomType = r.Room.Type,
-                    ReservationPeriod = new ReservationPeriodViewModel(r.CheckinDate, r.CheckoutDate)
+                    ReservationPeriod = new ReservationPeriodViewModel(r.CheckinDate, r.CheckoutDate),
+                    CreationDate = r.CreationDate
                 })
                 .ToList();
 
@@ -87,6 +89,12 @@ namespace Web.Controllers
             };
 
             return View(model);
+        }
+
+        [HttpPut]
+        public IActionResult Checkout(long id)
+        {
+            throw new NotImplementedException();
         }
 
         [HttpPost]

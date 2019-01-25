@@ -75,12 +75,19 @@ namespace Infrastructure
                     var customer = new Customer("Michael", "Smith", "00444567123");
                     db.Reservations.Add(new Reservation(singleRoom.Id, customer, DateTime.Today, DateTime.Today.AddDays(1)));
                 }
-                
+
                 var standardRoom = hotel.Rooms.Where(r => r.Type == "Standard").FirstOrDefault();
                 if (standardRoom != null)
                 {
                     var customer = new Customer("Vanesa", "Jackson", "00442567188");
                     db.Reservations.Add(new Reservation(standardRoom.Id, customer, DateTime.Today, DateTime.Today.AddDays(7)));
+                }
+
+                var suiteRoom = hotel.Rooms.Where(r => r.Type == "Suite").FirstOrDefault();
+                if (suiteRoom != null)
+                {
+                    var customer = new Customer("Max", "Donovan", "00442567188");
+                    db.Reservations.Add(new Reservation(suiteRoom.Id, customer, DateTime.Today.AddDays(-2), DateTime.Today.AddDays(-1)));
                 }
 
                 await db.SaveChangesAsync();

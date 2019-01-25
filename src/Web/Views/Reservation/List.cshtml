@@ -13,6 +13,7 @@
             <th>@Html.DisplayNameFor(model => model.RoomType)</th>
             <th>@Html.DisplayNameFor(model => model.ReservationPeriod.CheckinDate)</th>
             <th>@Html.DisplayNameFor(model => model.ReservationPeriod.CheckoutDate)</th>
+            <th>@Html.DisplayNameFor(model => model.CreationDate)</th>
             <th></th>
         </tr>
     </thead>
@@ -24,10 +25,16 @@
             <td>@Html.DisplayFor(modelItem => item.RoomType)</td>
             <td>@Html.DisplayFor(modelItem => item.ReservationPeriod.CheckinDate)</td>
             <td>@Html.DisplayFor(modelItem => item.ReservationPeriod.CheckoutDate)</td>
+            <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
             <td>
-                @Html.ActionLink("Checkout", "Checkout", new { /* id=item.PrimaryKey */ })
-                @*@Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+                @if (item.CanCheckout)
+                {
+                    @Html.ActionLink("Checkout", "Checkout", new { id = item.Id })
+                }
+                else
+                {
+                    <span>Check-out not available</span>
+                }
             </td>
         </tr>
 }
