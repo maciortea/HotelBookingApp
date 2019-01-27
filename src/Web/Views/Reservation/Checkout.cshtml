@@ -1,0 +1,76 @@
+﻿@model Web.Models.Reservation.ReservationCheckoutViewModel
+
+@{
+    ViewData["Title"] = "Checkout reservation";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Checkout">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.HiddenFor(m => m.Id)
+
+            <p><strong>@Html.DisplayNameFor(model => model.RoomType):</strong> @Html.DisplayFor(model => model.RoomType)</p>
+            <p><strong>@Html.DisplayNameFor(model => model.CustomerFullName):</strong> @Html.DisplayFor(model => model.CustomerFullName)</p>
+            <p><strong>@Html.DisplayNameFor(model => model.NoOfNights):</strong> @Html.DisplayFor(model => model.NoOfNights)</p>
+
+            @if (Model.HotelFacilities.Count > 0)
+            {
+                <p><strong>Hotel facilities:</strong></p>
+                <ul>
+                    @foreach (string facility in Model.HotelFacilities)
+                    {
+                        <li>@facility</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p><strong>Hotel facilities:</strong> None</p>
+            }
+
+            @if (Model.RoomFacilities.Count > 0)
+            {
+                <p><strong>Room facilities:</strong></p>
+                @for (int i = 0; i < Model.RoomFacilities.Count; i++)
+                {
+                    <div class="form-check">
+                        <input asp-for="@Model.RoomFacilities[i].Selected" id="@Model.RoomFacilities[i].Id" class="form-check-input" type="checkbox" value="" />
+                        <label class="form-check-label" for="@Model.RoomFacilities[i].Id">@Model.RoomFacilities[i].Name</label>
+                        <input type="hidden" asp-for="@Model.RoomFacilities[i].Id" />
+                        <input type="hidden" asp-for="@Model.RoomFacilities[i].Selected" />
+                    </div>
+                }
+            }
+            else
+            {
+                <p><strong>Room facilities:</strong> None</p>
+            }
+
+            @*<div class="form-group">
+            <label asp-for="RoomType" class="control-label"></label>
+            <input asp-for="RoomType" class="form-control" />
+            <span asp-validation-for="RoomType" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CustomerFullName" class="control-label"></label>
+            <input asp-for="CustomerFullName" class="form-control" />
+            <span asp-validation-for="CustomerFullName" class="text-danger"></span>
+        </div>*@
+            <div class="form-group">
+                <input type="submit" value="Checkout" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

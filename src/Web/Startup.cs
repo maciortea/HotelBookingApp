@@ -41,6 +41,7 @@ namespace Web
 
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IHotelFacilityRepository, HotelFacilityRepository>();
             services.AddScoped<IReservationService, ReservationService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

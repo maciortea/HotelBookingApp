@@ -20,7 +20,24 @@ namespace Web.Models.Reservation
         [DisplayName("Created on")]
         public DateTime CreationDate { get; set; }
 
-        public bool CanCheckout => ReservationPeriod.CheckoutDate <= _currentDate;
+        public CheckoutStatus CheckoutStatus
+        {
+            get
+            {
+                if (ReservationPeriod.CheckinDate > _currentDate && ReservationPeriod.CheckoutDate > _currentDate)
+                {
+                    return CheckoutStatus.Cancel;
+                }
+                else if (ReservationPeriod.CheckoutDate > _currentDate)
+                {
+                    return CheckoutStatus.Early;
+                }
+                else
+                {
+                    return CheckoutStatus.Complete;
+                }
+            }
+        }
 
         public ReservationViewModel(DateTime currentDate)
         {

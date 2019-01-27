@@ -14,14 +14,26 @@ namespace ApplicationCore.Services
             _reservationRepository = reservationRepository;
         }
 
-        public async Task<IReadOnlyCollection<Reservation>> ListAll(long hotelId)
+        public async Task<IReadOnlyCollection<Reservation>> ListAllAsync(long hotelId)
         {
-            return await _reservationRepository.GetAllByHotelId(hotelId);
+            return await _reservationRepository.GetAllByHotelIdAsync(hotelId);
         }
 
-        public async Task Create(Reservation reservation)
+        public async Task CreateAsync(Reservation reservation)
         {
-            await _reservationRepository.Create(reservation);
+            await _reservationRepository.CreateAsync(reservation);
+        }
+
+        public async Task CancelAsync(long id)
+        {
+            Reservation reservation = await _reservationRepository.GetByIdAsync(id);
+            if (reservation == null)
+            {
+                // error
+            }
+
+            reservation.Cancel();
+            await _reservationRepository.UpdateAsync(reservation);
         }
     }
 }

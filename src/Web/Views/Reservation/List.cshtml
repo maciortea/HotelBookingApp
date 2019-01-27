@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Web.Models.Reservation.ReservationViewModel>
+﻿@using Web.Models.Reservation
+
+@model IEnumerable<Web.Models.Reservation.ReservationViewModel>
 
 @{
     ViewData["Title"] = "Reservations";
@@ -27,13 +29,17 @@
             <td>@Html.DisplayFor(modelItem => item.ReservationPeriod.CheckoutDate)</td>
             <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
             <td>
-                @if (item.CanCheckout)
+                @if (item.CheckoutStatus == CheckoutStatus.Early)
+                {
+                    @Html.ActionLink("Early checkout", "Checkout", new { id = item.Id })
+                }
+                else if (item.CheckoutStatus == CheckoutStatus.Complete)
                 {
                     @Html.ActionLink("Checkout", "Checkout", new { id = item.Id })
                 }
                 else
                 {
-                    <span>Check-out not available</span>
+                    @Html.ActionLink("Cancel", "Cancel", new { id = item.Id })
                 }
             </td>
         </tr>

@@ -2,8 +2,8 @@
 {
     public class StandardRoom : Room
     {
-        public StandardRoom(long hotelId, int floor, decimal pricePerNightInDollars)
-            : base(hotelId, floor, "Standard", pricePerNightInDollars)
+        public StandardRoom(long hotelId, Euros pricePerNight)
+            : base(hotelId, "Standard", pricePerNight)
         {
         }
     }

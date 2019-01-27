@@ -22,13 +22,20 @@ namespace Web.Models.Reservation
         [Required]
         public string CustomerPhone { get; set; }
 
+        [DisplayName("Hotel facilities")]
+        public List<long> HotelFacilityIds { get; set; }
+
         public ReservationPeriodViewModel ReservationPeriod { get; set; }
 
         public List<RoomViewModel> AvailableRooms { get; set; }
 
+        public List<FacilityViewModel> HotelFacilities { get; set; }
+
         public ReservationEditViewModel()
         {
+            HotelFacilityIds = new List<long>();
             AvailableRooms = new List<RoomViewModel>();
+            HotelFacilities = new List<FacilityViewModel>();
         }
     }
 }

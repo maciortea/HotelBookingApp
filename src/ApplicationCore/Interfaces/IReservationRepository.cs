@@ -6,7 +6,9 @@ namespace ApplicationCore.Interfaces
 {
     public interface IReservationRepository
     {
-        Task<IReadOnlyCollection<Reservation>> GetAllByHotelId(long hotelId);
-        Task Create(Reservation reservation);
+        Task<Reservation> GetByIdAsync(long id);
+        Task<IReadOnlyCollection<Reservation>> GetAllByHotelIdAsync(long hotelId);
+        Task CreateAsync(Reservation reservation);
+        Task UpdateAsync(Reservation reservation);
     }
 }

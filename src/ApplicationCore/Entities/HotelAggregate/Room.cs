@@ -1,23 +1,34 @@
 ﻿using ApplicationCore.Common;
+using System.Collections.Generic;
 
 namespace ApplicationCore.Entities.HotelAggregate
 {
     public class Room : Entity
     {
         public long HotelId { get; private set; }
-        public int Floor { get; private set; }
         public string Type { get; private set; }
-        public decimal PricePerNightInDollars { get; private set; }
+        public Euros PricePerNight { get; private set; }
 
-        public Room(long hotelId, int floor, string type, decimal pricePerNightInDollars)
+        private readonly List<RoomFacility> _facilities = new List<RoomFacility>();
+        public IReadOnlyCollection<RoomFacility> Facilities => _facilities.AsReadOnly();
+
+        private Room()
         {
-            Contract.Require(floor >= 0, "Cannot have negative floor");
-            Contract.Require(floor <= 10, "Maximum 10 floors allowed"); // put this in config
+        }
+
+        public Room(long hotelId, string type, Euros pricePerNight)
+        {
+            Contract.Require(hotelId > 0, "Hotel id must be greater than 0");
+            Contract.Require(!string.IsNullOrWhiteSpace(type), "Room type is required");
 
             HotelId = hotelId;
-            Floor = floor;
             Type = type;
-            PricePerNightInDollars = pricePerNightInDollars;
+            PricePerNight = pricePerNight;
+        }
+
+        public void AddFacility(RoomFacility facility)
+        {
+            _facilities.Add(facility);
         }
     }
 }

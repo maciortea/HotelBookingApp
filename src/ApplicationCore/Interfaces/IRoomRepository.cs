@@ -7,6 +7,6 @@ namespace ApplicationCore.Interfaces
 {
     public interface IRoomRepository
     {
-        Task<List<Room>> GetAvailableByHotelIdAndPeriod(long hotelId, DateTime checkinDate, DateTime checkoutDate);
+        Task<List<RoomItem>> GetAvailableByHotelIdAndPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate);
     }
 }

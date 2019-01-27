@@ -14,18 +14,27 @@ namespace Infrastructure.Repositories
         {
         }
 
-        public async Task<List<Room>> GetAvailableByHotelIdAndPeriod(long hotelId, DateTime checkinDate, DateTime checkoutDate)
+        public async Task<List<RoomItem>> GetAvailableByHotelIdAndPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate)
         {
-            var reservedRoomIds = await GetReservedRoomIdsByHotelIdAndPeriod(hotelId, checkinDate, checkoutDate);
-            return await _db.Rooms.Where(r => !reservedRoomIds.Contains(r.Id)).OrderBy(r => r.Floor).ToListAsync();
+            var reservedRoomItemIds = await GetReservedRoomItemIdsByHotelIdAndPeriodAsync(hotelId, checkinDate, checkoutDate);
+            return await _db.RoomItems
+                .Include(r => r.Room)
+                .Where(r => r.Room.HotelId == hotelId && !reservedRoomItemIds.Contains(r.Id))
+                .OrderBy(r => r.Number)
+                .ToListAsync();
         }
 
-        private async Task<long[]> GetReservedRoomIdsByHotelIdAndPeriod(long hotelId, DateTime checkinDate, DateTime checkoutDate)
+        private async Task<long[]> GetReservedRoomItemIdsByHotelIdAndPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate)
         {
             return await _db.Reservations
-                .Include(r => r.Room)
-                .Where(r => r.Room.HotelId == hotelId && checkinDate <= r.CheckinDate && checkoutDate <= r.CheckoutDate)
-                .Select(r => r.RoomId)
+                .Include(r => r.RoomItem)
+                .Where(r =>
+                    r.RoomItem.Room.HotelId == hotelId &&
+                    checkinDate <= r.CheckinDate &&
+                    checkoutDate <= r.CheckoutDate &&
+                    !r.CheckedOut &&
+                    !r.Canceled)
+                .Select(r => r.RoomItemId)
                 .ToArrayAsync();
         }
     }

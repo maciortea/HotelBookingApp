@@ -6,7 +6,8 @@ namespace ApplicationCore.Interfaces
 {
     public interface IReservationService
     {
-        Task<IReadOnlyCollection<Reservation>> ListAll(long hotelId);
-        Task Create(Reservation reservation);
+        Task<IReadOnlyCollection<Reservation>> ListAllAsync(long hotelId);
+        Task CreateAsync(Reservation reservation);
+        Task CancelAsync(long id);
     }
 }
