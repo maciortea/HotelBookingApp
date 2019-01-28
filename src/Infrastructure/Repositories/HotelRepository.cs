@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class HotelRepository : Repository, IHotelRepository
+    public class HotelRepository : EfRepository<Hotel>, IHotelRepository
     {
         private readonly IReservationRepository _reservationRepository;
 

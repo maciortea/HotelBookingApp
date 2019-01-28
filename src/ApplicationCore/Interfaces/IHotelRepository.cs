@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Interfaces
 {
-    public interface IHotelRepository
+    public interface IHotelRepository : IRepository<Hotel>
     {
         Task<List<RoomItem>> GetAvailableRoomsByPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate);
         Task<IReadOnlyCollection<HotelFacility>> GetFacilitiesByHotelIdAsync(long hotelId);

@@ -21,7 +21,7 @@ namespace ApplicationCore.Services
 
         public async Task CreateAsync(Reservation reservation)
         {
-            await _reservationRepository.CreateAsync(reservation);
+            await _reservationRepository.AddAsync(reservation);
         }
 
         public async Task CancelAsync(long id)

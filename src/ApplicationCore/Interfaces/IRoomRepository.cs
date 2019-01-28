@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Interfaces
 {
-    public interface IRoomRepository
+    public interface IRoomRepository : IRepository<Room>
     {
         Task<IReadOnlyCollection<RoomFacility>> GetAllByRoomIdAsync(long roomId);
     }

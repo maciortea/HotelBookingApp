@@ -55,11 +55,12 @@ namespace Web
 
             services.AddDefaultIdentity<HotelPersonal>().AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
+            services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<IHotelRepository, HotelRepository>();
             services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IReservationService, ReservationService>();
-            services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

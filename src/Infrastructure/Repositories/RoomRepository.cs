@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class RoomRepository : Repository, IRoomRepository
+    public class RoomRepository : EfRepository<Room>, IRoomRepository
     {
         public RoomRepository(ApplicationDbContext db) : base(db)
         {

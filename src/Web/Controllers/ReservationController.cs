@@ -128,7 +128,7 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Checkout(long id)
         {
-            Reservation reservation = await _reservationRepository.GetByIdAsync(id);
+            Reservation reservation = await _reservationRepository.GetFullByIdAsync(id);
             if (reservation == null)
             {
                 // show error
