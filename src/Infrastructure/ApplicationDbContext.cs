@@ -46,7 +46,6 @@ namespace Infrastructure
         private void ConfigureReservation(EntityTypeBuilder<Reservation> builder)
         {
             builder.OwnsOne(r => r.Customer);
-            builder.Ignore(r => r.NoOfNights);
 
             var facilitiesNavigation = builder.Metadata.FindNavigation(nameof(Reservation.Facilities));
             facilitiesNavigation.SetPropertyAccessMode(PropertyAccessMode.Field);

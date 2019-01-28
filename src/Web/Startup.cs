@@ -61,6 +61,7 @@ namespace Web
             services.AddScoped<IHotelRepository, HotelRepository>();
             services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IReservationService, ReservationService>();
+            services.AddScoped<IPriceCalculator, PriceCalculator>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -70,7 +71,8 @@ namespace Web
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/Reservation/Error");
                 app.UseDatabaseErrorPage();
             }
             else

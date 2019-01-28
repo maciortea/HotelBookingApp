@@ -8,13 +8,15 @@ namespace ApplicationCore.Entities.ReservationAggregate
 {
     public class Reservation : AggregateRoot
     {
+        public const int MinimumNoOfNights = 1;
+
         public long RoomItemId { get; private set; }
         public RoomItem RoomItem { get; private set; }
         public Customer Customer { get; private set; }
         public DateTime CheckinDate { get; private set; }
         public DateTime CheckoutDate { get; private set; }
-        public int NoOfNights => Math.Abs((CheckinDate - CheckinDate).Days - 1);
         public DateTime CreationDate { get; private set; } = DateTime.Now;
+        public DateTime? ActualCheckoutDate { get; private set; }
         public bool CheckedOut { get; private set; }
         public bool Canceled { get; private set; }
 
@@ -45,10 +47,40 @@ namespace ApplicationCore.Entities.ReservationAggregate
             _facilities.Add(reservationFacility);
         }
 
+        public int CalculateCurrentNoOfNights(DateTime currentDate)
+        {
+            if (CheckoutDate > currentDate)
+            {
+                if (currentDate == CheckinDate)
+                {
+                    return MinimumNoOfNights;
+                }
+                else
+                {
+                    return Math.Abs((currentDate - CheckinDate).Days);
+                }
+            }
+            else
+            {
+                return Math.Abs((CheckoutDate - CheckinDate).Days);
+            }
+        }
+
+        public void Checkout()
+        {
+            Close(false, true);
+        }
+
         public void Cancel()
         {
-            Canceled = true;
-            CheckedOut = true;
+            Close(true, true);
+        }
+
+        private void Close(bool canceled, bool checkedOut)
+        {
+            Canceled = canceled;
+            CheckedOut = checkedOut;
+            ActualCheckoutDate = DateTime.Today;
         }
     }
 }

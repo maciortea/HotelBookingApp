@@ -8,6 +8,7 @@ namespace ApplicationCore.Interfaces
     {
         Task<IReadOnlyCollection<Reservation>> ListAllAsync(long hotelId);
         Task CreateAsync(Reservation reservation);
+        Task CheckoutAsync(long id);
         Task CancelAsync(long id);
     }
 }

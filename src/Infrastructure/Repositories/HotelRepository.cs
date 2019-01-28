@@ -38,7 +38,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Result<IReadOnlyCollection<HotelFacility>>> GetFacilitiesByHotelIdAsync(long hotelId)
         {
-            Hotel hotel = await _db.Hotels.FindAsync(hotelId);
+            Hotel hotel = await _db.Hotels.Include(h => h.Facilities).SingleOrDefaultAsync(h => h.Id == hotelId);
             if (hotel == null)
             {
                 string message = $"Hote with id '{hotelId}' doesn't exists";

@@ -8,41 +8,48 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.CustomerFullName)</th>
-            <th>@Html.DisplayNameFor(model => model.RoomType)</th>
-            <th>@Html.DisplayNameFor(model => model.ReservationPeriod.CheckinDate)</th>
-            <th>@Html.DisplayNameFor(model => model.ReservationPeriod.CheckoutDate)</th>
-            <th>@Html.DisplayNameFor(model => model.CreationDate)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model)
+@if (Model.Count() > 0)
 {
-        <tr>
-            <td>@Html.DisplayFor(modelItem => item.CustomerFullName)</td>
-            <td>@Html.DisplayFor(modelItem => item.RoomType)</td>
-            <td>@Html.DisplayFor(modelItem => item.ReservationPeriod.CheckinDate)</td>
-            <td>@Html.DisplayFor(modelItem => item.ReservationPeriod.CheckoutDate)</td>
-            <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
-            <td>
-                @if (item.CheckoutStatus == CheckoutStatus.Early)
-                {
-                    @Html.ActionLink("Early checkout", "Checkout", new { id = item.Id })
-                }
-                else if (item.CheckoutStatus == CheckoutStatus.Complete)
-                {
-                    @Html.ActionLink("Checkout", "Checkout", new { id = item.Id })
-                }
-                else
-                {
-                    @Html.ActionLink("Cancel", "Cancel", new { id = item.Id })
-                }
-            </td>
-        </tr>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.CustomerFullName)</th>
+                <th>@Html.DisplayNameFor(model => model.RoomType)</th>
+                <th>@Html.DisplayNameFor(model => model.ReservationPeriod.CheckinDate)</th>
+                <th>@Html.DisplayNameFor(model => model.ReservationPeriod.CheckoutDate)</th>
+                <th>@Html.DisplayNameFor(model => model.CreationDate)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.CustomerFullName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.RoomType)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ReservationPeriod.CheckinDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ReservationPeriod.CheckoutDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
+                    <td>
+                        @if (item.CheckoutStatus == CheckoutStatus.Early)
+                        {
+                            @Html.ActionLink("Early checkout", "Checkout", new { id = item.Id })
+                        }
+                        else if (item.CheckoutStatus == CheckoutStatus.Complete)
+                        {
+                            @Html.ActionLink("Checkout", "Checkout", new { id = item.Id })
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Cancel", "Cancel", new { id = item.Id })
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
-    </tbody>
-</table>
+else
+{
+    <p>No reservations. All rooms are available for booking.</p>
+}

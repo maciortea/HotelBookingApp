@@ -17,5 +17,13 @@ namespace Infrastructure.Repositories
         {
             return await _db.Rooms.Where(r => r.Id == roomId).SelectMany(r => r.Facilities).ToListAsync();
         }
+
+        public async Task<IReadOnlyCollection<RoomFacility>> GetFacilitiesByIds(long roomId, long[] facilityIds)
+        {
+            return await _db.Rooms
+                .Where(r => r.Id == roomId)
+                .SelectMany(r => r.Facilities.Where(f => facilityIds.Contains(f.Id)))
+                .ToListAsync();
+        }
     }
 }

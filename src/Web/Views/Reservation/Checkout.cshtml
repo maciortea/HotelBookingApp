@@ -29,12 +29,12 @@
             }
             else
             {
-                <p><strong>Hotel facilities:</strong> None</p>
+                <p><strong>Hotel facilities:</strong> None of the hotel facilities were selected at reservation</p>
             }
 
             @if (Model.RoomFacilities.Count > 0)
             {
-                <p><strong>Room facilities:</strong></p>
+                <p><strong>Select room facilities that apply:</strong></p>
                 @for (int i = 0; i < Model.RoomFacilities.Count; i++)
                 {
                     <div class="form-check">
@@ -47,30 +47,52 @@
             }
             else
             {
-                <p><strong>Room facilities:</strong> None</p>
+                    <p><strong>Room facilities:</strong> @Model.RoomType.ToLower() rooms does not have facilities</p>
             }
 
-            @*<div class="form-group">
-            <label asp-for="RoomType" class="control-label"></label>
-            <input asp-for="RoomType" class="form-control" />
-            <span asp-validation-for="RoomType" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="CustomerFullName" class="control-label"></label>
-            <input asp-for="CustomerFullName" class="form-control" />
-            <span asp-validation-for="CustomerFullName" class="text-danger"></span>
-        </div>*@
+            <br />
+            <br />
+
             <div class="form-group">
-                <input type="submit" value="Checkout" class="btn btn-default" />
+                <a id="CalculatePrice" class="btn btn-default">Calculate price</a>
+                <span id="TotalPriceContainer" style="display: none;"><strong>Total price:</strong> <span id="TotalPrice"></span><span> &euro;</span></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" id="Checkout" value="Checkout" class="btn btn-default" disabled="disabled" />
+                <span id="CheckoutInfo">Please calculate the price first in order to checkout</span>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function() {
+            $('#CalculatePrice').click(function (event) {
+                event.preventDefault();
+
+                var roomFacilityIds = [];
+                $('.form-check-input:checked').each(function () {
+                    roomFacilityIds.push(this.id);
+                });
+
+                var reservationId = $('#Id').val();
+                $.post('/Reservation/CalculatePrice', { id: reservationId, roomFacilityIds: roomFacilityIds })
+                    .done(function (price) {
+                        $('#TotalPrice').text(price);
+                        $('#TotalPriceContainer').show();
+                    })
+                    .fail(function () {
+                        alert('An error has occured while calculating total price!');
+                    })
+                    .always(function () {
+                        $('#CheckoutInfo').hide();
+                        $('#Checkout').removeAttr('disabled');
+                    });
+            });
+        });
+    </script>
 }

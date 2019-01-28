@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,19 +23,22 @@ namespace Web.Controllers
         private readonly IReservationService _reservationService;
         private readonly IHotelRepository _hotelRepository;
         private readonly IRoomRepository _roomRepository;
+        private readonly IPriceCalculator _priceCalculator;
 
         public ReservationController(
             UserManager<HotelPersonal> userManager,
             IReservationRepository reservationRepository,
             IReservationService reservationService,
             IHotelRepository hotelRepository,
-            IRoomRepository roomRepository)
+            IRoomRepository roomRepository,
+            IPriceCalculator priceCalculator)
         {
             _userManager = userManager;
             _reservationRepository = reservationRepository;
             _reservationService = reservationService;
             _hotelRepository = hotelRepository;
             _roomRepository = roomRepository;
+            _priceCalculator = priceCalculator;
         }
 
         [HttpGet]
@@ -140,7 +144,7 @@ namespace Web.Controllers
             Reservation reservation = await _reservationRepository.GetFullByIdAsync(id);
             if (reservation == null)
             {
-                // show error
+                //throw new ApplicationException(availableRoomsResult.Error);
             }
 
             var roomFacilities = await _roomRepository.GetAllByRoomIdAsync(reservation.RoomItem.RoomId);
@@ -150,7 +154,7 @@ namespace Web.Controllers
                 Id = reservation.Id,
                 RoomType = reservation.RoomItem.Room.Type,
                 CustomerFullName = reservation.Customer.FullName,
-                NoOfNights = (DateTime.Today - reservation.CheckinDate).Days,
+                NoOfNights = reservation.CalculateCurrentNoOfNights(DateTime.Today),
                 HotelFacilities = reservation.Facilities.Select(f => f.HotelFacility.Name).ToList(),
                 RoomFacilities = roomFacilities
                     .Select(f => new FacilityViewModel
@@ -161,22 +165,34 @@ namespace Web.Controllers
                     .ToList()
             };
 
-            if (reservation.CheckoutDate > DateTime.Today)
-            {
-                model.NoOfNights = Math.Abs((DateTime.Today - reservation.CheckinDate).Days - 1);
-            }
-            else
-            {
-                model.NoOfNights = reservation.NoOfNights;
-            }
-
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult Checkout(ReservationCheckoutViewModel model)
+        public async Task<IActionResult> Checkout(ReservationCheckoutViewModel model)
         {
-            throw new NotImplementedException();
+            await _reservationService.CheckoutAsync(model.Id);
+            return RedirectToAction("List");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CalculatePrice(long id, long[] roomFacilityIds)
+        {
+            Reservation reservation = await _reservationRepository.GetFullByIdAsync(id);
+            if (reservation == null)
+            {
+                //throw new ApplicationException(availableRoomsResult.Error);
+            }
+
+            int noOfNights = reservation.CalculateCurrentNoOfNights(DateTime.Today);
+
+            IReadOnlyCollection<Facility> roomFacilities = await _roomRepository.GetFacilitiesByIds(reservation.RoomItem.RoomId, roomFacilityIds);
+            var facilities = new List<Facility>();
+            facilities.AddRange(roomFacilities);
+            facilities.AddRange(reservation.Facilities.Select(f => f.HotelFacility));
+            decimal price = _priceCalculator.CalculatePrice(reservation.RoomItem.Room, facilities, noOfNights);
+
+            return Json(price);
         }
 
         [HttpGet]

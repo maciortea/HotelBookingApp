@@ -24,6 +24,18 @@ namespace ApplicationCore.Services
             await _reservationRepository.AddAsync(reservation);
         }
 
+        public async Task CheckoutAsync(long id)
+        {
+            Reservation reservation = await _reservationRepository.GetByIdAsync(id);
+            if (reservation == null)
+            {
+                // error
+            }
+
+            reservation.Checkout();
+            await _reservationRepository.UpdateAsync(reservation);
+        }
+
         public async Task CancelAsync(long id)
         {
             Reservation reservation = await _reservationRepository.GetByIdAsync(id);
