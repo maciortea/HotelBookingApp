@@ -9,6 +9,7 @@ using Infrastructure;
 using Infrastructure.Repositories;
 using ApplicationCore.Interfaces;
 using ApplicationCore.Services;
+using Infrastructure.Logging;
 
 namespace Web
 {
@@ -58,6 +59,7 @@ namespace Web
             services.AddScoped<IHotelRepository, HotelRepository>();
             services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IReservationService, ReservationService>();
+            services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
