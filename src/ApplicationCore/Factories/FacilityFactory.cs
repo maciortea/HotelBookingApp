@@ -1,4 +1,7 @@
-﻿namespace ApplicationCore.Entities.HotelAggregate
+﻿using ApplicationCore.Entities;
+using ApplicationCore.Entities.RoomAggregate;
+
+namespace ApplicationCore.Factories
 {
     public class FacilityFactory
     {

@@ -2,7 +2,7 @@
 using ApplicationCore.Common;
 using CSharpFunctionalExtensions;
 
-namespace ApplicationCore.Entities.HotelAggregate
+namespace ApplicationCore.Entities
 {
     public class Address : ValueObject
     {

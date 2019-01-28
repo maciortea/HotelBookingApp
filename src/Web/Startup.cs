@@ -55,8 +55,8 @@ namespace Web
             services.AddDefaultIdentity<HotelPersonal>().AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IReservationRepository, ReservationRepository>();
+            services.AddScoped<IHotelRepository, HotelRepository>();
             services.AddScoped<IRoomRepository, RoomRepository>();
-            services.AddScoped<IHotelFacilityRepository, HotelFacilityRepository>();
             services.AddScoped<IReservationService, ReservationService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

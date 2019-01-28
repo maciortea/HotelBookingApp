@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
-using System.Linq;
+﻿using ApplicationCore.Entities;
 using ApplicationCore.Entities.HotelAggregate;
 using ApplicationCore.Entities.ReservationAggregate;
+using ApplicationCore.Entities.RoomAggregate;
+using ApplicationCore.Factories;
+using Microsoft.AspNetCore.Identity;
 using System;
-using ApplicationCore.Entities;
-using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Infrastructure
 {
@@ -14,8 +15,6 @@ namespace Infrastructure
         public static async Task SeedAsync(ApplicationDbContext db, UserManager<HotelPersonal> userManager)
         {
             long hotelId = await EnsureHotelAsync(db);
-            await EnsureRoomsAsync(db, hotelId);
-            await AddRoomItemsToHotelAsync(db, hotelId);
             await EnsureReservationsAsync(db, hotelId);
             await EnsureUserAsync(userManager, "test@domain.com", "P@ssword1", hotelId);
         }
@@ -41,57 +40,38 @@ namespace Infrastructure
                 db.Hotels.Update(hotel);
                 await db.SaveChangesAsync();
 
-                return hotel.Id;
-            }
-        }
+                var singleRoom = new SingleRoom(hotel.Id, Euros.Of(35));
+                var standardRoom = new StandardRoom(hotel.Id, Euros.Of(45));
+                var suiteRoom = new SuiteRoom(hotel.Id, Euros.Of(60));
 
-        private static async Task EnsureRoomsAsync(ApplicationDbContext db, long hotelId)
-        {
-            if (!db.Rooms.Any())
-            {
-                await db.Rooms.AddAsync(new SingleRoom(hotelId, Euros.Of(35)));
-                await db.Rooms.AddAsync(new StandardRoom(hotelId, Euros.Of(45)));
-
-                var suiteRoome = new SuiteRoom(hotelId, Euros.Of(60));
-                await db.Rooms.AddAsync(suiteRoome);
+                await db.Rooms.AddAsync(singleRoom);
+                await db.Rooms.AddAsync(standardRoom);
+                await db.Rooms.AddAsync(suiteRoom);
                 await db.SaveChangesAsync();
 
-                suiteRoome.AddFacility(FacilityFactory.CreateRoomFacility("Minibar", Euros.Of(5), suiteRoome.Id));
+                suiteRoom.AddFacility(FacilityFactory.CreateRoomFacility("Minibar", Euros.Of(5), suiteRoom.Id));
                 await db.SaveChangesAsync();
-            }
-        }
 
-        private static async Task AddRoomItemsToHotelAsync(ApplicationDbContext db, long hotelId)
-        {
-            Hotel hotel = await db.Hotels.FindAsync(hotelId);
-            var rooms = await db.Rooms.Where(r => r.HotelId == hotelId).ToListAsync();
-            if (hotel != null && !hotel.RoomItems.Any() && rooms.Count > 0)
-            {
-                long singleRoomId = rooms.Where(r => r.Type == "Single").Select(r => r.Id).FirstOrDefault();
-                long standardRoomId = rooms.Where(r => r.Type == "Standard").Select(r => r.Id).FirstOrDefault();
-                long suiteRoomId = rooms.Where(r => r.Type == "Suite").Select(r => r.Id).FirstOrDefault();
-
-                if (singleRoomId > 0 && standardRoomId > 0 && suiteRoomId > 0)
+                int roomNumber = 1;
+                for (int i = 0; i < 5; i++)
                 {
-                    int roomNumber = 1;
-                    for (int i = 0; i < 5; i++)
-                    {
-                        hotel.AddRoomItem(new RoomItem(singleRoomId, 0, roomNumber));
-                        roomNumber++;
-                        hotel.AddRoomItem(new RoomItem(singleRoomId, 1, roomNumber));
-                        roomNumber++;
-                        hotel.AddRoomItem(new RoomItem(standardRoomId, 0, roomNumber));
-                        roomNumber++;
-                        hotel.AddRoomItem(new RoomItem(standardRoomId, 1, roomNumber));
-                        roomNumber++;
-                        hotel.AddRoomItem(new RoomItem(suiteRoomId, 0, roomNumber));
-                        roomNumber++;
-                        hotel.AddRoomItem(new RoomItem(suiteRoomId, 1, roomNumber));
-                        roomNumber++;
-                    }
-
-                    await db.SaveChangesAsync();
+                    hotel.AddRoomItem(new RoomItem(singleRoom.Id, 0, roomNumber));
+                    roomNumber++;
+                    hotel.AddRoomItem(new RoomItem(singleRoom.Id, 1, roomNumber));
+                    roomNumber++;
+                    hotel.AddRoomItem(new RoomItem(standardRoom.Id, 0, roomNumber));
+                    roomNumber++;
+                    hotel.AddRoomItem(new RoomItem(standardRoom.Id, 1, roomNumber));
+                    roomNumber++;
+                    hotel.AddRoomItem(new RoomItem(suiteRoom.Id, 0, roomNumber));
+                    roomNumber++;
+                    hotel.AddRoomItem(new RoomItem(suiteRoom.Id, 1, roomNumber));
+                    roomNumber++;
                 }
+
+                await db.SaveChangesAsync();
+
+                return hotel.Id;
             }
         }
 

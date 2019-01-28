@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entities.ReservationAggregate;
 using ApplicationCore.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace Infrastructure.Repositories
         {
             return await _db.Reservations
                 .Include(r => r.Facilities).ThenInclude(f => f.HotelFacility)
-                .Include(r => r.RoomItem.Room.Facilities)
+                .Include(r => r.RoomItem.Room)
                 .Where(r => r.Id == id)
                 .FirstOrDefaultAsync();
         }
@@ -28,6 +29,19 @@ namespace Infrastructure.Repositories
                 .Include(r => r.RoomItem.Room)
                 .Where(r => r.RoomItem.Room.HotelId == hotelId && !r.CheckedOut && !r.Canceled)
                 .ToListAsync();
+        }
+
+        public async Task<long[]> GetIdsByHotelIdAndPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate)
+        {
+            return await _db.Reservations
+                .Where(r =>
+                    r.RoomItem.Room.HotelId == hotelId &&
+                    checkinDate <= r.CheckinDate &&
+                    checkoutDate <= r.CheckoutDate &&
+                    !r.CheckedOut &&
+                    !r.Canceled)
+                .Select(r => r.RoomItemId)
+                .ToArrayAsync();
         }
 
         public async Task CreateAsync(Reservation reservation)

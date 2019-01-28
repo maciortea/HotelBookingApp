@@ -2,7 +2,7 @@
 using ApplicationCore.SharedKernel;
 using System.Collections.Generic;
 
-namespace ApplicationCore.Entities.HotelAggregate
+namespace ApplicationCore.Entities.RoomAggregate
 {
     public class Room : Entity
     {

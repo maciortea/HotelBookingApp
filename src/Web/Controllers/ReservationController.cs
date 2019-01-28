@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using ApplicationCore.Entities;
 using ApplicationCore.Entities.ReservationAggregate;
 using ApplicationCore.Interfaces;
 using Infrastructure;
@@ -19,21 +20,21 @@ namespace Web.Controllers
         private readonly UserManager<HotelPersonal> _userManager;
         private readonly IReservationRepository _reservationRepository;
         private readonly IReservationService _reservationService;
+        private readonly IHotelRepository _hotelRepository;
         private readonly IRoomRepository _roomRepository;
-        private readonly IHotelFacilityRepository _hotelFacilityRepository;
 
         public ReservationController(
             UserManager<HotelPersonal> userManager,
             IReservationRepository reservationRepository,
             IReservationService reservationService,
-            IRoomRepository roomRepository,
-            IHotelFacilityRepository hotelFacilityRepository)
+            IHotelRepository hotelRepository,
+            IRoomRepository roomRepository)
         {
             _userManager = userManager;
             _reservationRepository = reservationRepository;
             _reservationService = reservationService;
+            _hotelRepository = hotelRepository;
             _roomRepository = roomRepository;
-            _hotelFacilityRepository = hotelFacilityRepository;
         }
 
         [HttpGet]
@@ -82,8 +83,8 @@ namespace Web.Controllers
                 // show error
             }
 
-            var availableRooms = await _roomRepository.GetAvailableByHotelIdAndPeriodAsync(user.HotelId, checkinDate, checkoutDate);
-            var hotelFacilities = await _hotelFacilityRepository.GetAllByHotelIdAsync(user.HotelId);
+            var availableRooms = await _hotelRepository.GetAvailableRoomsByPeriodAsync(user.HotelId, checkinDate, checkoutDate);
+            var hotelFacilities = await _hotelRepository.GetFacilitiesByHotelIdAsync(user.HotelId);
 
             var model = new ReservationEditViewModel
             {
@@ -133,6 +134,8 @@ namespace Web.Controllers
                 // show error
             }
 
+            var roomFacilities = await _roomRepository.GetAllByRoomIdAsync(reservation.RoomItem.RoomId);
+
             var model = new ReservationCheckoutViewModel
             {
                 Id = reservation.Id,
@@ -140,7 +143,7 @@ namespace Web.Controllers
                 CustomerFullName = reservation.Customer.FullName,
                 NoOfNights = (DateTime.Today - reservation.CheckinDate).Days,
                 HotelFacilities = reservation.Facilities.Select(f => f.HotelFacility.Name).ToList(),
-                RoomFacilities = reservation.RoomItem.Room.Facilities
+                RoomFacilities = roomFacilities
                     .Select(f => new FacilityViewModel
                     {
                         Id = f.Id,

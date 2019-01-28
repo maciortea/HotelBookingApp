@@ -1,5 +1,7 @@
-﻿using ApplicationCore.Entities.HotelAggregate;
+﻿using ApplicationCore.Entities;
+using ApplicationCore.Entities.HotelAggregate;
 using ApplicationCore.Entities.ReservationAggregate;
+using ApplicationCore.Entities.RoomAggregate;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -10,11 +12,8 @@ namespace Infrastructure
     {
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Room> Rooms { get; set; }
-        public DbSet<RoomItem> RoomItems { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<HotelFacility> HotelFacilities { get; set; }
-        public DbSet<RoomFacility> RoomFacilities { get; set; }
-        public DbSet<ReservationFacility> ReservationFacilities { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

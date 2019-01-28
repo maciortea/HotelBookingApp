@@ -1,4 +1,4 @@
-﻿namespace ApplicationCore.Entities.HotelAggregate
+﻿namespace ApplicationCore.Entities
 {
     public class HotelFacility : Facility
     {

@@ -2,7 +2,7 @@
 using ApplicationCore.Common;
 using CSharpFunctionalExtensions;
 
-namespace ApplicationCore.Entities.ReservationAggregate
+namespace ApplicationCore.Entities
 {
     public class Customer : ValueObject
     {

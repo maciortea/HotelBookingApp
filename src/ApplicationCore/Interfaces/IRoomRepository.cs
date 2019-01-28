@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Entities.HotelAggregate;
-using System;
+﻿using ApplicationCore.Entities.RoomAggregate;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,6 +6,6 @@ namespace ApplicationCore.Interfaces
 {
     public interface IRoomRepository
     {
-        Task<List<RoomItem>> GetAvailableByHotelIdAndPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate);
+        Task<IReadOnlyCollection<RoomFacility>> GetAllByRoomIdAsync(long roomId);
     }
 }
