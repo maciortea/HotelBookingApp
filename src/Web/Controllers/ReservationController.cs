@@ -43,7 +43,7 @@ namespace Web.Controllers
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
             {
-                // show error
+                throw new ApplicationException($"Unable to load user with id '{User.Identity.Name}'.");
             }
 
             var reservations = await _reservationService.ListAllAsync(user.HotelId);
@@ -80,16 +80,25 @@ namespace Web.Controllers
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
             {
-                // show error
+                throw new ApplicationException($"Unable to load user with id '{User.Identity.Name}'.");
             }
 
-            var availableRooms = await _hotelRepository.GetAvailableRoomsByPeriodAsync(user.HotelId, checkinDate, checkoutDate);
-            var hotelFacilities = await _hotelRepository.GetFacilitiesByHotelIdAsync(user.HotelId);
+            var availableRoomsResult = await _hotelRepository.GetAvailableRoomsByPeriodAsync(user.HotelId, checkinDate, checkoutDate);
+            if (availableRoomsResult.IsFailure)
+            {
+                throw new ApplicationException(availableRoomsResult.Error);
+            }
+
+            var hotelFacilitiesResult = await _hotelRepository.GetFacilitiesByHotelIdAsync(user.HotelId);
+            if (hotelFacilitiesResult.IsFailure)
+            {
+                throw new ApplicationException(availableRoomsResult.Error);
+            }
 
             var model = new ReservationEditViewModel
             {
                 ReservationPeriod = new ReservationPeriodViewModel(checkinDate, checkoutDate),
-                AvailableRooms = availableRooms
+                AvailableRooms = availableRoomsResult.Value
                     .GroupBy(r => r.Room.Type)
                     .Select(g => new RoomViewModel
                     {
@@ -97,7 +106,7 @@ namespace Web.Controllers
                         Type = g.Key
                     })
                     .ToList(),
-                HotelFacilities = hotelFacilities
+                HotelFacilities = hotelFacilitiesResult.Value
                     .Select(f => new FacilityViewModel
                     {
                         Id = f.Id,
