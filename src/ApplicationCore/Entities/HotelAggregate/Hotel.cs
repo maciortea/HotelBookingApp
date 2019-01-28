@@ -1,9 +1,9 @@
-﻿using ApplicationCore.Interfaces;
+﻿using ApplicationCore.SharedKernel;
 using System.Collections.Generic;
 
 namespace ApplicationCore.Entities.HotelAggregate
 {
-    public class Hotel : Entity, IAggregateRoot
+    public class Hotel : AggregateRoot
     {
         public string Name { get; private set; }
         public Address Address { get; private set; }

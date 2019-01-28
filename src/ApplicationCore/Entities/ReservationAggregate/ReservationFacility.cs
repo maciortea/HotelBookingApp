@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities.HotelAggregate;
+using ApplicationCore.SharedKernel;
 
 namespace ApplicationCore.Entities.ReservationAggregate
 {

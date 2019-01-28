@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Common;
+using ApplicationCore.SharedKernel;
 
 namespace ApplicationCore.Entities.HotelAggregate
 {

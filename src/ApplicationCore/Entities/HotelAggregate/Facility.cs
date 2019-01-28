@@ -1,4 +1,6 @@
-﻿namespace ApplicationCore.Entities.HotelAggregate
+﻿using ApplicationCore.SharedKernel;
+
+namespace ApplicationCore.Entities.HotelAggregate
 {
     public class Facility : Entity
     {

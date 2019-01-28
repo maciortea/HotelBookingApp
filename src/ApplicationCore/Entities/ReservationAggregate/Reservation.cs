@@ -1,12 +1,12 @@
 ﻿using ApplicationCore.Common;
 using ApplicationCore.Entities.HotelAggregate;
-using ApplicationCore.Interfaces;
+using ApplicationCore.SharedKernel;
 using System;
 using System.Collections.Generic;
 
 namespace ApplicationCore.Entities.ReservationAggregate
 {
-    public class Reservation : Entity, IAggregateRoot
+    public class Reservation : AggregateRoot
     {
         public long RoomItemId { get; private set; }
         public RoomItem RoomItem { get; private set; }
