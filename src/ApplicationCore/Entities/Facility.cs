@@ -1,4 +1,5 @@
-﻿using ApplicationCore.SharedKernel;
+﻿using ApplicationCore.Common;
+using ApplicationCore.SharedKernel;
 
 namespace ApplicationCore.Entities
 {
@@ -14,6 +15,8 @@ namespace ApplicationCore.Entities
 
         public Facility(string name, Euros unitPrice, bool freeOfCharge)
         {
+            Contract.Require(!string.IsNullOrWhiteSpace(name), "Name is required");
+
             Name = name;
             UnitPrice = unitPrice;
             FreeOfCharge = freeOfCharge;

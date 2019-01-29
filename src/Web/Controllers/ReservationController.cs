@@ -163,7 +163,7 @@ namespace Web.Controllers
                 Id = reservationResult.Value.Id,
                 RoomType = reservationResult.Value.RoomItem.Room.Type,
                 CustomerFullName = reservationResult.Value.Customer.FullName,
-                NoOfNights = reservationResult.Value.CalculateCurrentNoOfNights(DateTime.Today),
+                NoOfNights = reservationResult.Value.CalculateCheckoutNoOfNights(DateTime.Today),
                 HotelFacilities = reservationResult.Value.Facilities.Select(f => f.HotelFacility.Name).ToList(),
                 RoomFacilities = roomFacilitiesResult.Value
                     .Select(f => new FacilityViewModel
@@ -193,7 +193,7 @@ namespace Web.Controllers
                 throw new ApplicationException(reservationResult.Error);
             }
 
-            int noOfNights = reservationResult.Value.CalculateCurrentNoOfNights(DateTime.Today);
+            int noOfNights = reservationResult.Value.CalculateCheckoutNoOfNights(DateTime.Today);
 
             var roomFacilitiesResult = await _roomRepository.GetFacilitiesByIds(reservationResult.Value.RoomItem.RoomId, roomFacilityIds);
             if (roomFacilitiesResult.IsFailure)

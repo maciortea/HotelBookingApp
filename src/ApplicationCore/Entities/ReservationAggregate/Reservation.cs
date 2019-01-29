@@ -8,6 +8,7 @@ namespace ApplicationCore.Entities.ReservationAggregate
 {
     public class Reservation : AggregateRoot
     {
+        public const int MaximumAllowedDays = 30;
         public const int MinimumNoOfNights = 1;
 
         public long RoomItemId { get; private set; }
@@ -34,7 +35,7 @@ namespace ApplicationCore.Entities.ReservationAggregate
             Contract.Require(checkinDate < checkoutDate, "Check-in date must be before check-out date");
 
             int periodInDays = (checkoutDate - checkinDate).Days;
-            Contract.Require(periodInDays <= 30, "Cannot reserve more than 30 days");
+            Contract.Require(periodInDays <= MaximumAllowedDays, $"Cannot reserve more than {MaximumAllowedDays} days");
 
             RoomItemId = roomItemId;
             Customer = customer;
@@ -47,23 +48,22 @@ namespace ApplicationCore.Entities.ReservationAggregate
             _facilities.Add(reservationFacility);
         }
 
-        public int CalculateCurrentNoOfNights(DateTime currentDate)
+        public int CalculateCheckoutNoOfNights(DateTime currentDate)
         {
-            if (CheckoutDate > currentDate)
+            if (CheckinDate <= currentDate && CheckoutDate > currentDate)
             {
                 if (currentDate == CheckinDate)
                 {
+                    // Checkin date is same as current date and checkout date is in future
+                    // This means that customer will be charged for one night stay
                     return MinimumNoOfNights;
                 }
-                else
-                {
-                    return Math.Abs((currentDate - CheckinDate).Days);
-                }
+
+                // Checkin date is in past and checkout date is in future
+                return Math.Abs((currentDate - CheckinDate).Days);
             }
-            else
-            {
-                return Math.Abs((CheckoutDate - CheckinDate).Days);
-            }
+
+            return Math.Abs((CheckoutDate - CheckinDate).Days);
         }
 
         public void Checkout()

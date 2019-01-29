@@ -2,8 +2,10 @@
 {
     public class SuiteRoom : Room
     {
+        public const string SuiteRoomName = "Suite";
+
         public SuiteRoom(long hotelId, Euros pricePerNight)
-            : base(hotelId, "Suite", pricePerNight)
+            : base(hotelId, SuiteRoomName, pricePerNight)
         {
         }
     }
