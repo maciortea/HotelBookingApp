@@ -50,8 +50,13 @@ namespace Web.Controllers
                 throw new ApplicationException($"Unable to load user with id '{User.Identity.Name}'.");
             }
 
-            var reservations = await _reservationService.ListAllAsync(user.HotelId);
-            var model = reservations
+            var reservationsResult = await _reservationService.ListAllAsync(user.HotelId);
+            if (reservationsResult.IsFailure)
+            {
+                throw new ApplicationException(reservationsResult.Error);
+            }
+
+            var model = reservationsResult.Value
                 .Select(r => new ReservationViewModel(DateTime.Today)
                 {
                     Id = r.Id,
@@ -141,22 +146,26 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Checkout(long id)
         {
-            Reservation reservation = await _reservationRepository.GetFullByIdAsync(id);
-            if (reservation == null)
+            var reservationResult = await _reservationRepository.GetFullByIdAsync(id);
+            if (reservationResult.IsFailure)
             {
-                //throw new ApplicationException(availableRoomsResult.Error);
+                throw new ApplicationException(reservationResult.Error);
             }
 
-            var roomFacilities = await _roomRepository.GetAllByRoomIdAsync(reservation.RoomItem.RoomId);
+            var roomFacilitiesResult = await _roomRepository.GetFacilitiesByRoomIdAsync(reservationResult.Value.RoomItem.RoomId);
+            if (roomFacilitiesResult.IsFailure)
+            {
+                throw new ApplicationException(roomFacilitiesResult.Error);
+            }
 
             var model = new ReservationCheckoutViewModel
             {
-                Id = reservation.Id,
-                RoomType = reservation.RoomItem.Room.Type,
-                CustomerFullName = reservation.Customer.FullName,
-                NoOfNights = reservation.CalculateCurrentNoOfNights(DateTime.Today),
-                HotelFacilities = reservation.Facilities.Select(f => f.HotelFacility.Name).ToList(),
-                RoomFacilities = roomFacilities
+                Id = reservationResult.Value.Id,
+                RoomType = reservationResult.Value.RoomItem.Room.Type,
+                CustomerFullName = reservationResult.Value.Customer.FullName,
+                NoOfNights = reservationResult.Value.CalculateCurrentNoOfNights(DateTime.Today),
+                HotelFacilities = reservationResult.Value.Facilities.Select(f => f.HotelFacility.Name).ToList(),
+                RoomFacilities = roomFacilitiesResult.Value
                     .Select(f => new FacilityViewModel
                     {
                         Id = f.Id,
@@ -178,19 +187,24 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> CalculatePrice(long id, long[] roomFacilityIds)
         {
-            Reservation reservation = await _reservationRepository.GetFullByIdAsync(id);
-            if (reservation == null)
+            var reservationResult = await _reservationRepository.GetFullByIdAsync(id);
+            if (reservationResult.IsFailure)
             {
-                //throw new ApplicationException(availableRoomsResult.Error);
+                throw new ApplicationException(reservationResult.Error);
             }
 
-            int noOfNights = reservation.CalculateCurrentNoOfNights(DateTime.Today);
+            int noOfNights = reservationResult.Value.CalculateCurrentNoOfNights(DateTime.Today);
 
-            IReadOnlyCollection<Facility> roomFacilities = await _roomRepository.GetFacilitiesByIds(reservation.RoomItem.RoomId, roomFacilityIds);
+            var roomFacilitiesResult = await _roomRepository.GetFacilitiesByIds(reservationResult.Value.RoomItem.RoomId, roomFacilityIds);
+            if (roomFacilitiesResult.IsFailure)
+            {
+                throw new ApplicationException(roomFacilitiesResult.Error);
+            }
+
             var facilities = new List<Facility>();
-            facilities.AddRange(roomFacilities);
-            facilities.AddRange(reservation.Facilities.Select(f => f.HotelFacility));
-            decimal price = _priceCalculator.CalculatePrice(reservation.RoomItem.Room, facilities, noOfNights);
+            facilities.AddRange(roomFacilitiesResult.Value);
+            facilities.AddRange(reservationResult.Value.Facilities.Select(f => f.HotelFacility));
+            decimal price = _priceCalculator.CalculatePrice(reservationResult.Value.RoomItem.Room, facilities, noOfNights);
 
             return Json(price);
         }

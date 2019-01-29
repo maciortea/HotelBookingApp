@@ -13,40 +13,67 @@ namespace Infrastructure.Repositories
     public class HotelRepository : EfRepository<Hotel>, IHotelRepository
     {
         private readonly IAppLogger<HotelRepository> _logger;
-        private readonly IReservationRepository _reservationRepository;
 
-        public HotelRepository(ApplicationDbContext db, IAppLogger<HotelRepository> logger, IReservationRepository reservationRepository) : base(db)
+        public HotelRepository(ApplicationDbContext db, IAppLogger<HotelRepository> logger) : base(db)
         {
             _logger = logger;
-            _reservationRepository = reservationRepository;
         }
 
         public async Task<Result<List<RoomItem>>> GetAvailableRoomsByPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate)
         {
-            long[] reservedRoomItemIds = await _reservationRepository.GetIdsByHotelIdAndPeriodAsync(hotelId, checkinDate, checkoutDate);
-            Hotel hotel = await _db.Hotels.Include(h => h.RoomItems).ThenInclude(r => r.Room).SingleOrDefaultAsync(h => h.Id == hotelId);
-            if (hotel == null)
+            try
             {
-                string message = $"Hote with id '{hotelId}' doesn't exists";
-                _logger.LogInformation(message);
-                return Result.Fail<List<RoomItem>>(message);
-            }
+                long[] reservedRoomItemIds = await GetBookedRoomItemIdsByHotelIdAndPeriodAsync(hotelId, checkinDate, checkoutDate);
+                Hotel hotel = await _db.Hotels.Include(h => h.RoomItems).ThenInclude(r => r.Room).SingleOrDefaultAsync(h => h.Id == hotelId);
+                if (hotel == null)
+                {
+                    string message = $"Hote with id '{hotelId}' doesn't exists";
+                    _logger.LogInformation(message);
+                    return Result.Fail<List<RoomItem>>(message);
+                }
 
-            List<RoomItem> roomItems = hotel.RoomItems.Where(r => !reservedRoomItemIds.Contains(r.Id)).OrderBy(r => r.Number).ToList();
-            return Result.Ok(roomItems);
+                List<RoomItem> roomItems = hotel.RoomItems.Where(r => !reservedRoomItemIds.Contains(r.Id)).OrderBy(r => r.Number).ToList();
+                return Result.Ok(roomItems);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Result.Fail<List<RoomItem>>(ex.Message);
+            }
         }
 
         public async Task<Result<IReadOnlyCollection<HotelFacility>>> GetFacilitiesByHotelIdAsync(long hotelId)
         {
-            Hotel hotel = await _db.Hotels.Include(h => h.Facilities).SingleOrDefaultAsync(h => h.Id == hotelId);
-            if (hotel == null)
+            try
             {
-                string message = $"Hote with id '{hotelId}' doesn't exists";
-                _logger.LogInformation(message);
-                return Result.Fail<IReadOnlyCollection<HotelFacility>>(message);
-            }
+                Hotel hotel = await _db.Hotels.Include(h => h.Facilities).SingleOrDefaultAsync(h => h.Id == hotelId);
+                if (hotel == null)
+                {
+                    string message = $"Hote with id '{hotelId}' doesn't exists";
+                    _logger.LogInformation(message);
+                    return Result.Fail<IReadOnlyCollection<HotelFacility>>(message);
+                }
 
-            return Result.Ok(hotel.Facilities);
+                return Result.Ok(hotel.Facilities);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Result.Fail<IReadOnlyCollection<HotelFacility>>(ex.Message);
+            }
+        }
+
+        private async Task<long[]> GetBookedRoomItemIdsByHotelIdAndPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate)
+        {
+            return await _db.Reservations
+                .Where(r =>
+                    r.RoomItem.Room.HotelId == hotelId &&
+                    checkinDate <= r.CheckinDate &&
+                    checkoutDate <= r.CheckoutDate &&
+                    !r.CheckedOut &&
+                    !r.Canceled)
+                .Select(r => r.RoomItemId)
+                .ToArrayAsync();
         }
     }
 }

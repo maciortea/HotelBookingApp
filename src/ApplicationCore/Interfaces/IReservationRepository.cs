@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities.ReservationAggregate;
+using CSharpFunctionalExtensions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,8 +8,7 @@ namespace ApplicationCore.Interfaces
 {
     public interface IReservationRepository : IRepository<Reservation>
     {
-        Task<Reservation> GetFullByIdAsync(long id);
-        Task<IReadOnlyCollection<Reservation>> GetAllByHotelIdAsync(long hotelId);
-        Task<long[]> GetIdsByHotelIdAndPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate);
+        Task<Result<Reservation>> GetFullByIdAsync(long id);
+        Task<Result<IReadOnlyCollection<Reservation>>> GetAllByHotelIdAsync(long hotelId);
     }
 }
