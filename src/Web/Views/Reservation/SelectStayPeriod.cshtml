@@ -51,16 +51,16 @@
                 todayHighlight: true,
                 startDate: '0d'
             }).on('changeDate', function () {
-                var startDate = $('#FromDate').datepicker('getDate');
-                $('#CheckinDate').val(startDate.toLocaleDateString());
-                var endDate = $('#ToDate').datepicker('getDate');
+                var fromDate = $('#FromDate').datepicker('getDate');
+                $('#CheckinDate').val(fromDate.toLocaleDateString());
+                var toDate = $('#ToDate').datepicker('getDate');
 
-                startDate.setDate(startDate.getDate() + 1);
-                $('#ToDate').datepicker('setStartDate', startDate);
+                fromDate.setDate(fromDate.getDate() + 1);
+                $('#ToDate').datepicker('setStartDate', fromDate);
 
-                if (startDate >= endDate) {
-                    $('#ToDate').datepicker('setDate', startDate);
-                    $('#CheckoutDate').val(startDate.toLocaleDateString());
+                if (fromDate >= toDate) {
+                    $('#ToDate').datepicker('setDate', fromDate);
+                    $('#CheckoutDate').val(fromDate.toLocaleDateString());
                 }
             });
 
