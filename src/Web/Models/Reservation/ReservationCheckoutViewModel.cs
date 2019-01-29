@@ -16,12 +16,12 @@ namespace Web.Models.Reservation
         [DisplayName("No of nights")]
         public int NoOfNights { get; set; }
 
-        public List<string> HotelFacilities { get; set; }
+        public List<FacilityViewModel> HotelFacilities { get; set; }
         public List<FacilityViewModel> RoomFacilities { get; set; }
 
         public ReservationCheckoutViewModel()
         {
-            HotelFacilities = new List<string>();
+            HotelFacilities = new List<FacilityViewModel>();
             RoomFacilities = new List<FacilityViewModel>();
         }
     }

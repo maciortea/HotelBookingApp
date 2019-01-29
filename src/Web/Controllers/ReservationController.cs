@@ -136,7 +136,7 @@ namespace Web.Controllers
             }
 
             var customer = new Customer(model.CustomerFirstName, model.CustomerLastName, model.CustomerPhone);
-            var reservation = new Reservation(model.RoomId, customer, model.ReservationPeriod.CheckinDate, model.ReservationPeriod.CheckoutDate);
+            var reservation = new Reservation(model.RoomId, customer, model.ReservationPeriod.CheckinDate.Date, model.ReservationPeriod.CheckoutDate.Date);
             model.HotelFacilityIds.ForEach(id => reservation.AddReservationFacility(new ReservationFacility(0, id)));
             await _reservationService.CreateAsync(reservation);
 
@@ -164,12 +164,22 @@ namespace Web.Controllers
                 RoomType = reservationResult.Value.RoomItem.Room.Type,
                 CustomerFullName = reservationResult.Value.Customer.FullName,
                 NoOfNights = reservationResult.Value.CalculateCheckoutNoOfNights(DateTime.Today),
-                HotelFacilities = reservationResult.Value.Facilities.Select(f => f.HotelFacility.Name).ToList(),
+                HotelFacilities = reservationResult.Value.Facilities
+                    .Select(f => new FacilityViewModel
+                    {
+                        Id = f.HotelFacilityId,
+                        Name = f.HotelFacility.Name,
+                        UnitPrice = f.HotelFacility.UnitPrice,
+                        FreeOfCharge = f.HotelFacility.FreeOfCharge
+                    })
+                    .ToList(),
                 RoomFacilities = roomFacilitiesResult.Value
                     .Select(f => new FacilityViewModel
                     {
                         Id = f.Id,
-                        Name = f.Name
+                        Name = f.Name,
+                        UnitPrice = f.UnitPrice,
+                        FreeOfCharge = f.FreeOfCharge
                     })
                     .ToList()
             };

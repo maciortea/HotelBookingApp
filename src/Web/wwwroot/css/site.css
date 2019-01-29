@@ -35,3 +35,8 @@ body {
         display: none;
     }
 }
+
+.flex-v-center {
+    display: flex;
+    align-items: center;
+}

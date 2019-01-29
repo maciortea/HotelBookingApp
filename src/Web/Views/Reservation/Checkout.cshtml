@@ -1,4 +1,6 @@
-﻿@model Web.Models.Reservation.ReservationCheckoutViewModel
+﻿@using Web.Models.Reservation
+
+@model ReservationCheckoutViewModel
 
 @{
     ViewData["Title"] = "Checkout reservation";
@@ -21,9 +23,16 @@
             {
                 <p><strong>Hotel facilities:</strong></p>
                 <ul>
-                    @foreach (string facility in Model.HotelFacilities)
+                    @foreach (FacilityViewModel facility in Model.HotelFacilities)
                     {
-                        <li>@facility</li>
+                        @if (facility.FreeOfCharge)
+                        {
+                            <li>@facility.Name - free</li>
+                        }
+                        else
+                        {
+                            <li>@facility.Name - @facility.UnitPrice &euro;</li>
+                        }
                     }
                 </ul>
             }
@@ -37,12 +46,17 @@
                 <p><strong>Select room facilities that apply:</strong></p>
                 @for (int i = 0; i < Model.RoomFacilities.Count; i++)
                 {
-                    <div class="form-check">
-                        <input asp-for="@Model.RoomFacilities[i].Selected" id="@Model.RoomFacilities[i].Id" class="form-check-input" type="checkbox" value="" />
-                        <label class="form-check-label" for="@Model.RoomFacilities[i].Id">@Model.RoomFacilities[i].Name</label>
-                        <input type="hidden" asp-for="@Model.RoomFacilities[i].Id" />
-                        <input type="hidden" asp-for="@Model.RoomFacilities[i].Selected" />
-                    </div>
+                <div class="form-check">
+                    <input asp-for="@Model.RoomFacilities[i].Selected" id="@Model.RoomFacilities[i].Id" class="form-check-input" type="checkbox" value="" />
+                    @if (@Model.RoomFacilities[i].FreeOfCharge)
+                    {
+                        <label class="form-check-label" for="@Model.RoomFacilities[i].Id">@Model.RoomFacilities[i].Name - free</label>
+                    }
+                    else
+                    {
+                        <label class="form-check-label" for="@Model.RoomFacilities[i].Id">@Model.RoomFacilities[i].Name - @Model.RoomFacilities[i].UnitPrice &euro;</label>
+                    }
+                </div>
                 }
             }
             else
