@@ -52,7 +52,7 @@
                     <select multiple="multiple" asp-for="HotelFacilityIds" asp-items="@(new SelectList(Model.HotelFacilities, "Id", "Name"))" class="form-control multi-select"></select>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-default" />
+                    <button type="submit" class="btn">Create</button>
                 </div>
             </form>
         }

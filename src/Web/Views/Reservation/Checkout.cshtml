@@ -10,7 +10,7 @@
 
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8">
         <form asp-action="Checkout">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @Html.HiddenFor(m => m.Id)
@@ -67,14 +67,22 @@
             <br />
             <br />
 
-            <div class="form-group">
-                <a id="CalculatePrice" class="btn btn-default">Calculate price</a>
-                <span id="TotalPriceContainer" style="display: none;"><strong>Total price:</strong> <span id="TotalPrice"></span><span> &euro;</span></span>
+            <div class="row">
+                <div class="col-sm-3">
+                    <button type="button" id="CalculatePrice" class="btn btn-block">Calculate price</button>
+                </div>
+                <div class="col">
+                    <p id="TotalPriceContainer" style="display: none;"><strong>Total price:</strong> <span id="TotalPrice"></span><span> &euro;</span></p>
+                </div>
             </div>
-
-            <div class="form-group">
-                <input type="submit" id="Checkout" value="Checkout" class="btn btn-default" disabled="disabled" />
-                <span id="CheckoutInfo">Please calculate the price first in order to checkout</span>
+            <br />
+            <div class="row">
+                <div class="col-sm-3">
+                    <button type="submit" id="Checkout" class="btn btn-block" disabled>Checkout</button>
+                </div>
+                <div class="col">
+                    <p id="CheckoutInfo">Please calculate the price first in order to checkout</p>
+                </div>
             </div>
         </form>
     </div>
