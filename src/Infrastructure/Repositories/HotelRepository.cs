@@ -68,6 +68,21 @@ namespace Infrastructure.Repositories
             }
         }
 
+        public async Task<Dictionary<string, Tuple<int, decimal>>> GetRoomTypesToCountAndPrice(long hotelId)
+        {
+            return await _db.Hotels
+                .Where(h => h.Id == hotelId)
+                .SelectMany(h => h.RoomItems)
+                .GroupBy(r => new { r.Room.Type })
+                .Select(r => new
+                {
+                    Type = r.Key,
+                    Count = r.Count(),
+                    PricePerNight = r.Select(x => x.Room.PricePerNight).FirstOrDefault()
+                })
+                .ToDictionaryAsync(k => k.Type.Type, v => Tuple.Create<int, decimal>(v.Count, v.PricePerNight));
+        }
+
         private async Task<long[]> GetBookedRoomItemIdsByHotelIdAndPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate)
         {
             return await _db.Reservations

@@ -12,5 +12,6 @@ namespace ApplicationCore.Interfaces
         Task<Hotel> GetFullByIdAsync(long id);
         Task<Result<List<RoomItem>>> GetAvailableRoomsByPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate);
         Task<Result<IReadOnlyCollection<HotelFacility>>> GetFacilitiesByHotelIdAsync(long hotelId);
+        Task<Dictionary<string, Tuple<int, decimal>>> GetRoomTypesToCountAndPrice(long hotelId);
     }
 }

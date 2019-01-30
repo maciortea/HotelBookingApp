@@ -11,16 +11,33 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Name):
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.FullAddress)
+            @Html.DisplayNameFor(model => model.FullAddress):
         </dt>
         <dd>
             @Html.DisplayFor(model => model.FullAddress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Facilities):
+        </dt>
+        <dd>
+            @string.Join(", ", Model.Facilities)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RoomTypesToCountAndPrice):
+        </dt>
+        <dd>
+            <ul>
+                @foreach (var item in Model.RoomTypesToCountAndPrice)
+                {
+                    <li>@item.Key - @item.Value.Item2 &euro; (total = @item.Value.Item1 rooms)</li>
+                }
+            </ul>
         </dd>
     </dl>
 </div>
