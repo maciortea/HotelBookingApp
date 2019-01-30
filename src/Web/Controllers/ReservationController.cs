@@ -42,13 +42,6 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        [HttpGet]
         public async Task<IActionResult> List()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
@@ -75,7 +68,8 @@ namespace Web.Controllers
                     CustomerFullName = r.Customer.FullName,
                     RoomType = r.RoomItem.Room.Type,
                     ReservationPeriod = new ReservationPeriodViewModel(r.CheckinDate, r.CheckoutDate),
-                    CreationDate = r.CreationDate
+                    CreationDate = r.CreationDate,
+                    Floor = r.RoomItem.Floor
                 })
                 .ToList();
 
@@ -92,7 +86,7 @@ namespace Web.Controllers
         [HttpPost]
         public IActionResult SelectStayPeriod(ReservationPeriodViewModel model)
         {
-            return RedirectToAction("Create", new { model.CheckinDate, model.CheckoutDate });
+            return RedirectToAction("Create", new { CheckinDate = model.CheckinDate.Date, CheckoutDate = model.CheckoutDate.Date });
         }
 
         [HttpGet]

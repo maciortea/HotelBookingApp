@@ -10,6 +10,7 @@ namespace ApplicationCore.Entities
         public string City { get; private set; }
         public string Country { get; private set; }
         public string ZipCode { get; private set; }
+        public string Display => $"{Street}, {City}, {Country}, {ZipCode}";
 
         public Address(string street, string city, string country, string zipCode)
         {

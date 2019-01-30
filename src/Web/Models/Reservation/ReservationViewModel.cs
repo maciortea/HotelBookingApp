@@ -23,6 +23,8 @@ namespace Web.Models.Reservation
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime CreationDate { get; set; }
 
+        public int Floor { get; set; }
+
         public CheckoutStatus CheckoutStatus
         {
             get

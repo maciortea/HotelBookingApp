@@ -1,0 +1,26 @@
+﻿@model Web.Models.Hotel.HotelViewModel
+
+@{
+    ViewData["Title"] = "Hotel details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FullAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FullAddress)
+        </dd>
+    </dl>
+</div>

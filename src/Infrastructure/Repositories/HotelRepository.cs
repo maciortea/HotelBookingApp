@@ -19,6 +19,11 @@ namespace Infrastructure.Repositories
             _logger = logger;
         }
 
+        public async Task<Hotel> GetFullByIdAsync(long id)
+        {
+            return await _db.Hotels.Include(h => h.Facilities).Include(h => h.RoomItems).Where(h => h.Id == id).SingleOrDefaultAsync();
+        }
+
         public async Task<Result<List<RoomItem>>> GetAvailableRoomsByPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate)
         {
             try

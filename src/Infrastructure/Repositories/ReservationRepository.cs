@@ -44,6 +44,7 @@ namespace Infrastructure.Repositories
                 IReadOnlyCollection<Reservation> reservations = await _db.Reservations
                     .Include(r => r.RoomItem.Room)
                     .Where(r => r.RoomItem.Room.HotelId == hotelId && !r.CheckedOut && !r.Canceled)
+                    .OrderByDescending(r => r.Id)
                     .ToListAsync();
 
                 return Result.Ok(reservations);

@@ -90,7 +90,7 @@ namespace Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Reservation}/{action=Index}/{id?}");
+                    template: "{controller=Hotel}/{action=Index}/{id?}");
             });
         }
     }

@@ -18,6 +18,7 @@
                 <th>@Html.DisplayNameFor(model => model.ReservationPeriod.CheckinDate)</th>
                 <th>@Html.DisplayNameFor(model => model.ReservationPeriod.CheckoutDate)</th>
                 <th>@Html.DisplayNameFor(model => model.CreationDate)</th>
+                <th>@Html.DisplayNameFor(model => model.Floor)</th>
                 <th></th>
             </tr>
         </thead>
@@ -30,6 +31,7 @@
                     <td>@Html.DisplayFor(modelItem => item.ReservationPeriod.CheckinDate)</td>
                     <td>@Html.DisplayFor(modelItem => item.ReservationPeriod.CheckoutDate)</td>
                     <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Floor)</td>
                     <td>
                         @if (item.CheckoutStatus == CheckoutStatus.Early)
                         {
