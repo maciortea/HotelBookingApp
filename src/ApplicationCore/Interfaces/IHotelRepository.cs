@@ -10,7 +10,7 @@ namespace ApplicationCore.Interfaces
     public interface IHotelRepository : IRepository<Hotel>
     {
         Task<Hotel> GetFullByIdAsync(long id);
-        Task<Result<List<RoomItem>>> GetAvailableRoomsByPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate);
+        Task<Result<List<RoomItem>>> GetAvailableRoomsByPeriodAsync(long hotelId, DateTime fromDate, DateTime toDate);
         Task<Result<IReadOnlyCollection<HotelFacility>>> GetFacilitiesByHotelIdAsync(long hotelId);
         Task<Dictionary<string, Tuple<int, decimal>>> GetRoomTypesToCountAndPrice(long hotelId);
     }

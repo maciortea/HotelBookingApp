@@ -6,7 +6,7 @@ namespace Web.Models.Reservation
 {
     public class ReservationEditViewModel
     {
-        [DisplayName("Room type")]
+        [DisplayName("Available room types")]
         [Required]
         public long RoomId { get; set; }
 
@@ -27,14 +27,14 @@ namespace Web.Models.Reservation
 
         public ReservationPeriodViewModel ReservationPeriod { get; set; }
 
-        public List<RoomViewModel> AvailableRooms { get; set; }
+        public List<RoomViewModel> AvailableRoomTypes { get; set; }
 
         public List<FacilityViewModel> HotelFacilities { get; set; }
 
         public ReservationEditViewModel()
         {
             HotelFacilityIds = new List<long>();
-            AvailableRooms = new List<RoomViewModel>();
+            AvailableRoomTypes = new List<RoomViewModel>();
             HotelFacilities = new List<FacilityViewModel>();
         }
     }

@@ -118,7 +118,7 @@ namespace Web.Controllers
             var model = new ReservationEditViewModel
             {
                 ReservationPeriod = new ReservationPeriodViewModel(checkinDate, checkoutDate),
-                AvailableRooms = availableRoomsResult.Value
+                AvailableRoomTypes = availableRoomsResult.Value
                     .GroupBy(r => r.Room.Type)
                     .Select(g => new RoomViewModel
                     {

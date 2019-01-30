@@ -24,11 +24,11 @@ namespace Infrastructure.Repositories
             return await _db.Hotels.Include(h => h.Facilities).Include(h => h.RoomItems).Where(h => h.Id == id).SingleOrDefaultAsync();
         }
 
-        public async Task<Result<List<RoomItem>>> GetAvailableRoomsByPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate)
+        public async Task<Result<List<RoomItem>>> GetAvailableRoomsByPeriodAsync(long hotelId, DateTime fromDate, DateTime toDate)
         {
             try
             {
-                long[] reservedRoomItemIds = await GetBookedRoomItemIdsByHotelIdAndPeriodAsync(hotelId, checkinDate, checkoutDate);
+                long[] reservedRoomItemIds = await GetBookedRoomItemIdsByHotelIdAndPeriodAsync(hotelId, fromDate, toDate);
                 Hotel hotel = await _db.Hotels.Include(h => h.RoomItems).ThenInclude(r => r.Room).SingleOrDefaultAsync(h => h.Id == hotelId);
                 if (hotel == null)
                 {
@@ -83,13 +83,13 @@ namespace Infrastructure.Repositories
                 .ToDictionaryAsync(k => k.Type.Type, v => Tuple.Create<int, decimal>(v.Count, v.PricePerNight));
         }
 
-        private async Task<long[]> GetBookedRoomItemIdsByHotelIdAndPeriodAsync(long hotelId, DateTime checkinDate, DateTime checkoutDate)
+        private async Task<long[]> GetBookedRoomItemIdsByHotelIdAndPeriodAsync(long hotelId, DateTime fromDate, DateTime toDate)
         {
             return await _db.Reservations
                 .Where(r =>
                     r.RoomItem.Room.HotelId == hotelId &&
-                    checkinDate <= r.CheckinDate &&
-                    checkoutDate <= r.CheckoutDate &&
+                    (r.CheckinDate >= fromDate && r.CheckinDate < toDate ||
+                     r.CheckinDate < fromDate && r.CheckoutDate > fromDate) &&
                     !r.CheckedOut &&
                     !r.Canceled)
                 .Select(r => r.RoomItemId)

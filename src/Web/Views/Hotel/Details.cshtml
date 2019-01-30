@@ -26,18 +26,32 @@
             @Html.DisplayNameFor(model => model.Facilities):
         </dt>
         <dd>
-            @string.Join(", ", Model.Facilities)
+            @if (Model.Facilities.Count == 0)
+            {
+                <span>no facilities</span>
+            }
+            else
+            {
+                @string.Join(", ", Model.Facilities)
+            }
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.RoomTypesToCountAndPrice):
         </dt>
         <dd>
-            <ul>
-                @foreach (var item in Model.RoomTypesToCountAndPrice)
-                {
-                    <li>@item.Key - @item.Value.Item2 &euro; (total = @item.Value.Item1 rooms)</li>
-                }
-            </ul>
+            @if (Model.RoomTypesToCountAndPrice.Count == 0)
+            {
+                <span>no rooms</span>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var item in Model.RoomTypesToCountAndPrice)
+                    {
+                        <li>@item.Key - @item.Value.Item2 &euro; (total = @item.Value.Item1 rooms)</li>
+                    }
+                </ul>
+            }
         </dd>
     </dl>
 </div>
