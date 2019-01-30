@@ -10,8 +10,8 @@
 <div class="card" style="width: 18rem;">
     <div class="card-body">
         <h4 class="card-title">Selected period</h4>
-        <p class="card-text">Check-in date: @Model.ReservationPeriod.CheckinDate.ToShortDateString()</p>
-        <p class="card-text">Check-out date: @Model.ReservationPeriod.CheckoutDate.ToShortDateString()</p>
+        <p class="card-text">Check-in date: @Model.ReservationPeriod.CheckinDate.ToString("dd-MM-yyyy")</p>
+        <p class="card-text">Check-out date: @Model.ReservationPeriod.CheckoutDate.ToString("dd-MM-yyyy")</p>
     </div>
 </div>
 <hr />

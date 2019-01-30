@@ -98,6 +98,11 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Create(DateTime checkinDate, DateTime checkoutDate)
         {
+            if (checkinDate >= checkoutDate)
+            {
+                throw new ApplicationException("Checkin-date cannot be same or after check-out date.");
+            }
+
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
             {

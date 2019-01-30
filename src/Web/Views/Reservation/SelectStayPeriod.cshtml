@@ -20,7 +20,7 @@
                 </div>
                 <div class="col-xs-3">
                     <p class="input-group">
-                        <input type="text" class="form-control" id="FromDate" value="@Model.CheckinDate.ToShortDateString()" readonly />
+                        <input type="text" class="form-control" id="FromDate" value="@Model.CheckinDate.ToString("dd-MM-yyyy")" readonly />
                     </p>
                 </div>
                 <div class="col-xs-1 text-center">
@@ -28,7 +28,7 @@
                 </div>
                 <div class="col-xs-3">
                     <p class="input-group">
-                        <input type="text" class="form-control" id="ToDate" value="@Model.CheckoutDate.ToShortDateString()" readonly />
+                        <input type="text" class="form-control" id="ToDate" value="@Model.CheckoutDate.ToString("dd-MM-yyyy")" readonly />
                     </p>
                 </div>
             </div>
@@ -46,7 +46,7 @@
     <script>
         $(document).ready(function () {
             $('#FromDate').datepicker({
-                format: 'dd/mm/yyyy',
+                format: 'dd-mm-yyyy',
                 autoclose: true,
                 todayHighlight: true,
                 startDate: '0d'
@@ -68,7 +68,7 @@
             minEndDate.setDate(minEndDate.getDate() + 1);
 
             $('#ToDate').datepicker({
-                format: 'dd/mm/yyyy',
+                format: 'dd-mm-yyyy',
                 autoclose: true,
                 todayHighlight: true,
                 startDate: minEndDate

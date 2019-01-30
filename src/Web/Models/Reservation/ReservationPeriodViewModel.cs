@@ -8,11 +8,13 @@ namespace Web.Models.Reservation
     {
         [DisplayName("Check-in date")]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         [Required]
         public DateTime CheckinDate { get; set; }
 
         [DisplayName("Check-out date")]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         [Required]
         public DateTime CheckoutDate { get; set; }
 
@@ -22,8 +24,6 @@ namespace Web.Models.Reservation
 
         public ReservationPeriodViewModel(DateTime checkinDate, DateTime checkoutDate)
         {
-            // validate that checkin date is before checkout date
-            // constrain this rule in properties
             CheckinDate = checkinDate;
             CheckoutDate = checkoutDate;
         }

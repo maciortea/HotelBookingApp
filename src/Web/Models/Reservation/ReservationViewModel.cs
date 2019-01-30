@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Web.Models.Reservation
 {
@@ -18,6 +19,8 @@ namespace Web.Models.Reservation
         public ReservationPeriodViewModel ReservationPeriod { get; set; }
 
         [DisplayName("Created on")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime CreationDate { get; set; }
 
         public CheckoutStatus CheckoutStatus
