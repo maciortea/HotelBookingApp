@@ -3,7 +3,7 @@ using ApplicationCore.SharedKernel;
 
 namespace ApplicationCore.Entities
 {
-    public class Facility : Entity
+    public abstract class Facility : Entity
     {
         public string Name { get; private set; }
         public bool FreeOfCharge { get; private set; }
