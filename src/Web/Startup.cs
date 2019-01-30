@@ -71,8 +71,7 @@ namespace Web
         {
             if (env.IsDevelopment())
             {
-                //app.UseDeveloperExceptionPage();
-                app.UseExceptionHandler("/Reservation/Error");
+                app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
             else
@@ -91,7 +90,7 @@ namespace Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Reservation}/{action=List}/{id?}");
+                    template: "{controller=Reservation}/{action=Index}/{id?}");
             });
         }
     }

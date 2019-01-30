@@ -42,12 +42,24 @@ namespace Web.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet]
         public async Task<IActionResult> List()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user == null)
             {
                 throw new ApplicationException($"Unable to load user with id '{User.Identity.Name}'.");
+            }
+
+            if (user.HotelId <= 0)
+            {
+                throw new ApplicationException($"User with id '{User.Identity.Name}' is not part of any hotel.");
             }
 
             var reservationsResult = await _reservationService.ListAllAsync(user.HotelId);
