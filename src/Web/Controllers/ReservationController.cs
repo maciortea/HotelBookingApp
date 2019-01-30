@@ -203,13 +203,13 @@ namespace Web.Controllers
                 throw new ApplicationException(reservationResult.Error);
             }
 
-            int noOfNights = reservationResult.Value.CalculateCheckoutNoOfNights(DateTime.Today);
-
             var roomFacilitiesResult = await _roomRepository.GetFacilitiesByIds(reservationResult.Value.RoomItem.RoomId, roomFacilityIds);
             if (roomFacilitiesResult.IsFailure)
             {
                 throw new ApplicationException(roomFacilitiesResult.Error);
             }
+
+            int noOfNights = reservationResult.Value.CalculateCheckoutNoOfNights(DateTime.Today);
 
             var facilities = new List<Facility>();
             facilities.AddRange(roomFacilitiesResult.Value);
