@@ -1,4 +1,4 @@
-﻿using ApplicationCore.Entities.RoomAggregate;
+﻿using ApplicationCore.Entities.RoomTypeAggregate;
 using CSharpFunctionalExtensions;
 using System.Collections.Generic;
 using System.Threading.Tasks;

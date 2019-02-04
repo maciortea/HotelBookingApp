@@ -1,6 +1,6 @@
 ﻿using ApplicationCore.Common;
 
-namespace ApplicationCore.Entities.RoomAggregate
+namespace ApplicationCore.Entities.RoomTypeAggregate
 {
     public class RoomFacility : Facility
     {

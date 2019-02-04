@@ -1,4 +1,4 @@
-﻿namespace ApplicationCore.Entities.RoomAggregate
+﻿namespace ApplicationCore.Entities.RoomTypeAggregate
 {
     public class SuiteRoom : RoomType
     {

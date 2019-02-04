@@ -1,5 +1,5 @@
 ﻿using ApplicationCore.Entities;
-using ApplicationCore.Entities.RoomAggregate;
+using ApplicationCore.Entities.RoomTypeAggregate;
 
 namespace ApplicationCore.Factories
 {

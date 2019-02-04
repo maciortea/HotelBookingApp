@@ -1,6 +1,6 @@
 ﻿using ApplicationCore.Common;
 using ApplicationCore.Entities;
-using ApplicationCore.Entities.RoomAggregate;
+using ApplicationCore.Entities.RoomTypeAggregate;
 using System;
 using Xunit;
 

@@ -1,7 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Entities.HotelAggregate;
 using ApplicationCore.Entities.ReservationAggregate;
-using ApplicationCore.Entities.RoomAggregate;
+using ApplicationCore.Entities.RoomTypeAggregate;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

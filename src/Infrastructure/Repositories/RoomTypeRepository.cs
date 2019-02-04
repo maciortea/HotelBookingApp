@@ -1,4 +1,4 @@
-﻿using ApplicationCore.Entities.RoomAggregate;
+﻿using ApplicationCore.Entities.RoomTypeAggregate;
 using ApplicationCore.Interfaces;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
