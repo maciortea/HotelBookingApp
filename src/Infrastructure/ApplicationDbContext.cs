@@ -11,7 +11,7 @@ namespace Infrastructure
     public class ApplicationDbContext : IdentityDbContext<HotelPersonal>
     {
         public DbSet<Hotel> Hotels { get; set; }
-        public DbSet<Room> Rooms { get; set; }
+        public DbSet<RoomType> RoomTypes { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<HotelFacility> HotelFacilities { get; set; }
 
@@ -26,7 +26,7 @@ namespace Infrastructure
 
             builder.Entity<Hotel>(ConfigureHotel);
             builder.Entity<Reservation>(ConfigureReservation);
-            builder.Entity<Room>(ConfigureRoom);
+            builder.Entity<RoomType>(ConfigureRoomType);
             builder.Entity<HotelFacility>(ConfigureHotelFacility);
             builder.Entity<RoomFacility>(ConfigureRoomFacility);
             builder.Entity<ReservationFacility>(ConfigureReservationFacilities);
@@ -34,7 +34,7 @@ namespace Infrastructure
 
         private void ConfigureHotel(EntityTypeBuilder<Hotel> builder)
         {
-            var roomsNavigation = builder.Metadata.FindNavigation(nameof(Hotel.RoomItems));
+            var roomsNavigation = builder.Metadata.FindNavigation(nameof(Hotel.Rooms));
             roomsNavigation.SetPropertyAccessMode(PropertyAccessMode.Field);
 
             var facilitiesNavigation = builder.Metadata.FindNavigation(nameof(Hotel.Facilities));
@@ -51,9 +51,9 @@ namespace Infrastructure
             facilitiesNavigation.SetPropertyAccessMode(PropertyAccessMode.Field);
         }
 
-        private void ConfigureRoom(EntityTypeBuilder<Room> builder)
+        private void ConfigureRoomType(EntityTypeBuilder<RoomType> builder)
         {
-            var facilitiesNavigation = builder.Metadata.FindNavigation(nameof(Room.Facilities));
+            var facilitiesNavigation = builder.Metadata.FindNavigation(nameof(RoomType.Facilities));
             facilitiesNavigation.SetPropertyAccessMode(PropertyAccessMode.Field);
 
             builder.OwnsOne(r => r.PricePerNight);

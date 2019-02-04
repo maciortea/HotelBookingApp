@@ -8,8 +8,8 @@ namespace ApplicationCore.Entities.HotelAggregate
         public string Name { get; private set; }
         public Address Address { get; private set; }
 
-        private readonly List<RoomItem> _roomItems = new List<RoomItem>();
-        public IReadOnlyCollection<RoomItem> RoomItems => _roomItems.AsReadOnly();
+        private readonly List<Room> _rooms = new List<Room>();
+        public IReadOnlyCollection<Room> Rooms => _rooms.AsReadOnly();
 
         private readonly List<HotelFacility> _facilities = new List<HotelFacility>();
         public IReadOnlyCollection<HotelFacility> Facilities => _facilities.AsReadOnly();
@@ -24,9 +24,9 @@ namespace ApplicationCore.Entities.HotelAggregate
             Address = address;
         }
 
-        public void AddRoomItem(RoomItem roomItem)
+        public void AddRoom(Room room)
         {
-            _roomItems.Add(roomItem);
+            _rooms.Add(room);
         }
 
         public void AddFacility(HotelFacility facility)

@@ -6,6 +6,6 @@ namespace ApplicationCore.Interfaces
 {
     public interface IPriceCalculator
     {
-        decimal CalculatePrice(Room room, IReadOnlyCollection<Facility> facilities, int noOfNights);
+        decimal CalculatePrice(RoomType room, IReadOnlyCollection<Facility> facilities, int noOfNights);
     }
 }

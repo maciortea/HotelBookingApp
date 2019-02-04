@@ -15,9 +15,9 @@ namespace ApplicationCore.Services
             _logger = logger;
         }
 
-        public decimal CalculatePrice(Room room, IReadOnlyCollection<Facility> facilities, int noOfNights)
+        public decimal CalculatePrice(RoomType roomType, IReadOnlyCollection<Facility> facilities, int noOfNights)
         {
-            if (room == null)
+            if (roomType == null)
             {
                 _logger.LogInformation("Room is null");
                 return 0m;
@@ -35,7 +35,7 @@ namespace ApplicationCore.Services
                 return 0m;
             }
 
-            decimal totalPrice = room.PricePerNight * noOfNights;
+            decimal totalPrice = roomType.PricePerNight * noOfNights;
 
             List<Facility> chargeableFacilities = facilities.Where(f => !f.FreeOfCharge).ToList();
             if (chargeableFacilities.Count > 0)

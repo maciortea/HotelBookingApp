@@ -1,6 +1,6 @@
 ﻿namespace ApplicationCore.Entities.RoomAggregate
 {
-    public class SuiteRoom : Room
+    public class SuiteRoom : RoomType
     {
         public const string SuiteRoomName = "Suite";
 

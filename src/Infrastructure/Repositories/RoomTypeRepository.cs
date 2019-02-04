@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class RoomRepository : EfRepository<Room>, IRoomRepository
+    public class RoomTypeRepository : EfRepository<RoomType>, IRoomTypeRepository
     {
-        private readonly IAppLogger<RoomRepository> _logger;
+        private readonly IAppLogger<RoomTypeRepository> _logger;
 
-        public RoomRepository(ApplicationDbContext db, IAppLogger<RoomRepository> logger) : base(db)
+        public RoomTypeRepository(ApplicationDbContext db, IAppLogger<RoomTypeRepository> logger) : base(db)
         {
             _logger = logger;
         }
@@ -22,7 +22,7 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                IReadOnlyCollection<RoomFacility> facilities = await _db.Rooms.Where(r => r.Id == roomId).SelectMany(r => r.Facilities).ToListAsync();
+                IReadOnlyCollection<RoomFacility> facilities = await _db.RoomTypes.Where(r => r.Id == roomId).SelectMany(r => r.Facilities).ToListAsync();
                 return Result.Ok(facilities);
             }
             catch (Exception ex)
@@ -36,7 +36,7 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                IReadOnlyCollection<RoomFacility> facilities = await _db.Rooms
+                IReadOnlyCollection<RoomFacility> facilities = await _db.RoomTypes
                     .Where(r => r.Id == roomId)
                     .SelectMany(r => r.Facilities.Where(f => facilityIds.Contains(f.Id)))
                     .ToListAsync();

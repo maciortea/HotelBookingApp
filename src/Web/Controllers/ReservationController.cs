@@ -22,7 +22,7 @@ namespace Web.Controllers
         private readonly IReservationRepository _reservationRepository;
         private readonly IReservationService _reservationService;
         private readonly IHotelRepository _hotelRepository;
-        private readonly IRoomRepository _roomRepository;
+        private readonly IRoomTypeRepository _roomTypeRepository;
         private readonly IPriceCalculator _priceCalculator;
 
         public ReservationController(
@@ -30,14 +30,14 @@ namespace Web.Controllers
             IReservationRepository reservationRepository,
             IReservationService reservationService,
             IHotelRepository hotelRepository,
-            IRoomRepository roomRepository,
+            IRoomTypeRepository roomTypeRepository,
             IPriceCalculator priceCalculator)
         {
             _userManager = userManager;
             _reservationRepository = reservationRepository;
             _reservationService = reservationService;
             _hotelRepository = hotelRepository;
-            _roomRepository = roomRepository;
+            _roomTypeRepository = roomTypeRepository;
             _priceCalculator = priceCalculator;
         }
 
@@ -66,10 +66,10 @@ namespace Web.Controllers
                 {
                     Id = r.Id,
                     CustomerFullName = r.Customer.FullName,
-                    RoomType = r.RoomItem.Room.Type,
+                    RoomType = r.Room.RoomType.Type,
                     ReservationPeriod = new ReservationPeriodViewModel(r.CheckinDate, r.CheckoutDate),
                     CreationDate = r.CreationDate,
-                    Floor = r.RoomItem.Floor
+                    Floor = r.Room.Floor
                 })
                 .ToList();
 
@@ -119,7 +119,7 @@ namespace Web.Controllers
             {
                 ReservationPeriod = new ReservationPeriodViewModel(checkinDate, checkoutDate),
                 AvailableRoomTypes = availableRoomsResult.Value
-                    .GroupBy(r => r.Room.Type)
+                    .GroupBy(r => r.RoomType.Type)
                     .Select(g => new RoomViewModel
                     {
                         Id = g.Select(r => r.Id).First(),
@@ -163,7 +163,7 @@ namespace Web.Controllers
                 throw new ApplicationException(reservationResult.Error);
             }
 
-            var roomFacilitiesResult = await _roomRepository.GetFacilitiesByRoomIdAsync(reservationResult.Value.RoomItem.RoomId);
+            var roomFacilitiesResult = await _roomTypeRepository.GetFacilitiesByRoomIdAsync(reservationResult.Value.Room.RoomTypeId);
             if (roomFacilitiesResult.IsFailure)
             {
                 throw new ApplicationException(roomFacilitiesResult.Error);
@@ -172,7 +172,7 @@ namespace Web.Controllers
             var model = new ReservationCheckoutViewModel
             {
                 Id = reservationResult.Value.Id,
-                RoomType = reservationResult.Value.RoomItem.Room.Type,
+                RoomType = reservationResult.Value.Room.RoomType.Type,
                 CustomerFullName = reservationResult.Value.Customer.FullName,
                 NoOfNights = reservationResult.Value.CalculateCheckoutNoOfNights(DateTime.Today),
                 HotelFacilities = reservationResult.Value.Facilities
@@ -214,7 +214,7 @@ namespace Web.Controllers
                 throw new ApplicationException(reservationResult.Error);
             }
 
-            var roomFacilitiesResult = await _roomRepository.GetFacilitiesByIds(reservationResult.Value.RoomItem.RoomId, roomFacilityIds);
+            var roomFacilitiesResult = await _roomTypeRepository.GetFacilitiesByIds(reservationResult.Value.Room.RoomTypeId, roomFacilityIds);
             if (roomFacilitiesResult.IsFailure)
             {
                 throw new ApplicationException(roomFacilitiesResult.Error);
@@ -225,7 +225,7 @@ namespace Web.Controllers
             var facilities = new List<Facility>();
             facilities.AddRange(roomFacilitiesResult.Value);
             facilities.AddRange(reservationResult.Value.Facilities.Select(f => f.HotelFacility));
-            decimal price = _priceCalculator.CalculatePrice(reservationResult.Value.RoomItem.Room, facilities, noOfNights);
+            decimal price = _priceCalculator.CalculatePrice(reservationResult.Value.Room.RoomType, facilities, noOfNights);
 
             return Json(price);
         }

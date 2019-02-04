@@ -59,7 +59,7 @@ namespace Web
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<IHotelRepository, HotelRepository>();
-            services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
             services.AddScoped<IReservationService, ReservationService>();
             services.AddScoped<IPriceCalculator, PriceCalculator>();
 

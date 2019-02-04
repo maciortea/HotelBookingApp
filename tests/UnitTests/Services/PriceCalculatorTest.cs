@@ -37,7 +37,7 @@ namespace UnitTests.Services
         {
             _loggerMock.Setup(x => x.LogInformation(It.IsAny<string>()));
 
-            var room = new Room(1, "type", Euros.Of(45));
+            var room = new RoomType(1, "type", Euros.Of(45));
             decimal price = _priceCalculator.CalculatePrice(room, null, 2);
 
             Assert.Equal(0m, price);
@@ -49,7 +49,7 @@ namespace UnitTests.Services
         {
             _loggerMock.Setup(x => x.LogInformation(It.IsAny<string>()));
 
-            var room = new Room(1, "type", Euros.Of(45));
+            var room = new RoomType(1, "type", Euros.Of(45));
             var facilities = GetFacilities();
             decimal price = _priceCalculator.CalculatePrice(room, facilities, -1);
 
@@ -62,7 +62,7 @@ namespace UnitTests.Services
         {
             _loggerMock.Setup(x => x.LogInformation(It.IsAny<string>()));
 
-            var room = new Room(1, "type", Euros.Of(45));
+            var room = new RoomType(1, "type", Euros.Of(45));
             var facilities = GetFacilities();
             decimal price = _priceCalculator.CalculatePrice(room, facilities, 0);
 
@@ -75,7 +75,7 @@ namespace UnitTests.Services
         {
             _loggerMock.Setup(x => x.LogInformation(It.IsAny<string>()));
 
-            var room = new Room(1, "type", Euros.Of(45));
+            var room = new RoomType(1, "type", Euros.Of(45));
             var facilities = new List<Facility>();
             decimal price = _priceCalculator.CalculatePrice(room, facilities, 1);
 
@@ -87,7 +87,7 @@ namespace UnitTests.Services
         {
             _loggerMock.Setup(x => x.LogInformation(It.IsAny<string>()));
 
-            var room = new Room(1, "type", Euros.Of(45));
+            var room = new RoomType(1, "type", Euros.Of(45));
             var facilities = new List<Facility>();
             decimal price = _priceCalculator.CalculatePrice(room, facilities, 3);
 
@@ -99,7 +99,7 @@ namespace UnitTests.Services
         {
             _loggerMock.Setup(x => x.LogInformation(It.IsAny<string>()));
 
-            var room = new Room(1, "type", Euros.Of(45));
+            var room = new RoomType(1, "type", Euros.Of(45));
             var facilities = GetFacilities();
             decimal price = _priceCalculator.CalculatePrice(room, facilities, 1);
 
@@ -111,7 +111,7 @@ namespace UnitTests.Services
         {
             _loggerMock.Setup(x => x.LogInformation(It.IsAny<string>()));
 
-            var room = new Room(1, "type", Euros.Of(45));
+            var room = new RoomType(1, "type", Euros.Of(45));
             var facilities = GetFacilities();
             decimal price = _priceCalculator.CalculatePrice(room, facilities, 3);
 
@@ -123,7 +123,7 @@ namespace UnitTests.Services
         {
             _loggerMock.Setup(x => x.LogInformation(It.IsAny<string>()));
 
-            var room = new Room(1, "type", Euros.Of(45));
+            var room = new RoomType(1, "type", Euros.Of(45));
             var facilities = GetNotChargeableFacilities();
             decimal price = _priceCalculator.CalculatePrice(room, facilities, 3);
 

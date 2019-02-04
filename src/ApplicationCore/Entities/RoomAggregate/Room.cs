@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ApplicationCore.Entities.RoomAggregate
 {
-    public class Room : Entity
+    public class RoomType : Entity
     {
         public long HotelId { get; private set; }
         public string Type { get; private set; }
@@ -13,11 +13,11 @@ namespace ApplicationCore.Entities.RoomAggregate
         private readonly List<RoomFacility> _facilities = new List<RoomFacility>();
         public IReadOnlyCollection<RoomFacility> Facilities => _facilities.AsReadOnly();
 
-        private Room()
+        private RoomType()
         {
         }
 
-        public Room(long hotelId, string type, Euros pricePerNight)
+        public RoomType(long hotelId, string type, Euros pricePerNight)
         {
             Contract.Require(hotelId > 0, "Hotel id must be greater than 0");
             Contract.Require(!string.IsNullOrWhiteSpace(type), "Room type is required");

@@ -24,7 +24,7 @@ namespace Infrastructure.Repositories
             {
                 Reservation reservation = await _db.Reservations
                     .Include(r => r.Facilities).ThenInclude(f => f.HotelFacility)
-                    .Include(r => r.RoomItem.Room)
+                    .Include(r => r.Room.RoomType)
                     .Where(r => r.Id == id)
                     .FirstOrDefaultAsync();
 
@@ -42,8 +42,8 @@ namespace Infrastructure.Repositories
             try
             {
                 IReadOnlyCollection<Reservation> reservations = await _db.Reservations
-                    .Include(r => r.RoomItem.Room)
-                    .Where(r => r.RoomItem.Room.HotelId == hotelId && !r.CheckedOut && !r.Canceled)
+                    .Include(r => r.Room.RoomType)
+                    .Where(r => r.Room.RoomType.HotelId == hotelId && !r.CheckedOut && !r.Canceled)
                     .OrderByDescending(r => r.Id)
                     .ToListAsync();
 

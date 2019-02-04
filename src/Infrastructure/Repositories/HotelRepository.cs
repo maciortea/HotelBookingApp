@@ -21,29 +21,29 @@ namespace Infrastructure.Repositories
 
         public async Task<Hotel> GetFullByIdAsync(long id)
         {
-            return await _db.Hotels.Include(h => h.Facilities).Include(h => h.RoomItems).Where(h => h.Id == id).SingleOrDefaultAsync();
+            return await _db.Hotels.Include(h => h.Facilities).Include(h => h.Rooms).Where(h => h.Id == id).SingleOrDefaultAsync();
         }
 
-        public async Task<Result<List<RoomItem>>> GetAvailableRoomsByPeriodAsync(long hotelId, DateTime fromDate, DateTime toDate)
+        public async Task<Result<List<Room>>> GetAvailableRoomsByPeriodAsync(long hotelId, DateTime fromDate, DateTime toDate)
         {
             try
             {
                 long[] reservedRoomItemIds = await GetBookedRoomItemIdsByHotelIdAndPeriodAsync(hotelId, fromDate, toDate);
-                Hotel hotel = await _db.Hotels.Include(h => h.RoomItems).ThenInclude(r => r.Room).SingleOrDefaultAsync(h => h.Id == hotelId);
+                Hotel hotel = await _db.Hotels.Include(h => h.Rooms).ThenInclude(r => r.RoomType).SingleOrDefaultAsync(h => h.Id == hotelId);
                 if (hotel == null)
                 {
                     string message = $"Hote with id '{hotelId}' doesn't exists";
                     _logger.LogInformation(message);
-                    return Result.Fail<List<RoomItem>>(message);
+                    return Result.Fail<List<Room>>(message);
                 }
 
-                List<RoomItem> roomItems = hotel.RoomItems.Where(r => !reservedRoomItemIds.Contains(r.Id)).OrderBy(r => r.Number).ToList();
-                return Result.Ok(roomItems);
+                List<Room> rooms = hotel.Rooms.Where(r => !reservedRoomItemIds.Contains(r.Id)).OrderBy(r => r.Number).ToList();
+                return Result.Ok(rooms);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return Result.Fail<List<RoomItem>>(ex.Message);
+                return Result.Fail<List<Room>>(ex.Message);
             }
         }
 
@@ -72,13 +72,13 @@ namespace Infrastructure.Repositories
         {
             return await _db.Hotels
                 .Where(h => h.Id == hotelId)
-                .SelectMany(h => h.RoomItems)
-                .GroupBy(r => new { r.Room.Type })
+                .SelectMany(h => h.Rooms)
+                .GroupBy(r => new { r.RoomType.Type })
                 .Select(r => new
                 {
                     Type = r.Key,
                     Count = r.Count(),
-                    PricePerNight = r.Select(x => x.Room.PricePerNight).FirstOrDefault()
+                    PricePerNight = r.Select(x => x.RoomType.PricePerNight).FirstOrDefault()
                 })
                 .ToDictionaryAsync(k => k.Type.Type, v => Tuple.Create<int, decimal>(v.Count, v.PricePerNight));
         }
@@ -87,12 +87,12 @@ namespace Infrastructure.Repositories
         {
             return await _db.Reservations
                 .Where(r =>
-                    r.RoomItem.Room.HotelId == hotelId &&
+                    r.Room.RoomType.HotelId == hotelId &&
                     (r.CheckinDate >= fromDate && r.CheckinDate < toDate ||
                      r.CheckinDate < fromDate && r.CheckoutDate > fromDate) &&
                     !r.CheckedOut &&
                     !r.Canceled)
-                .Select(r => r.RoomItemId)
+                .Select(r => r.RoomId)
                 .ToArrayAsync();
         }
     }

@@ -11,8 +11,8 @@ namespace ApplicationCore.Entities.ReservationAggregate
         public const int MaximumAllowedDays = 30;
         public const int MinimumNoOfNights = 1;
 
-        public long RoomItemId { get; private set; }
-        public RoomItem RoomItem { get; private set; }
+        public long RoomId { get; private set; }
+        public Room Room { get; private set; }
         public Customer Customer { get; private set; }
         public DateTime CheckinDate { get; private set; }
         public DateTime CheckoutDate { get; private set; }
@@ -28,16 +28,16 @@ namespace ApplicationCore.Entities.ReservationAggregate
         {
         }
 
-        public Reservation(long roomItemId, Customer customer, DateTime checkinDate, DateTime checkoutDate)
+        public Reservation(long roomId, Customer customer, DateTime checkinDate, DateTime checkoutDate)
         {
-            Contract.Require(roomItemId > 0, "Room item id must be greater than 0");
+            Contract.Require(roomId > 0, "Room id must be greater than 0");
             Contract.Require(customer != null, "Customer is required");
             Contract.Require(checkinDate < checkoutDate, "Check-in date must be before check-out date");
 
             int periodInDays = (checkoutDate - checkinDate).Days;
             Contract.Require(periodInDays <= MaximumAllowedDays, $"Cannot reserve more than {MaximumAllowedDays} days");
 
-            RoomItemId = roomItemId;
+            RoomId = roomId;
             Customer = customer;
             CheckinDate = checkinDate;
             CheckoutDate = checkoutDate;

@@ -49,7 +49,7 @@ namespace UnitTests.Entities
             var checkinDate = DateTime.Today;
             var checkoutDate = checkinDate.AddDays(1);
             var reservation = new Reservation(1, customer, checkinDate, checkoutDate);
-            Assert.Equal(1, reservation.RoomItemId);
+            Assert.Equal(1, reservation.RoomId);
             Assert.Same(customer, reservation.Customer);
             Assert.Equal(checkinDate, reservation.CheckinDate);
             Assert.Equal(checkoutDate, reservation.CheckoutDate);

@@ -44,9 +44,9 @@ namespace Infrastructure
                 var standardRoom = new StandardRoom(hotel.Id, Euros.Of(45));
                 var suiteRoom = new SuiteRoom(hotel.Id, Euros.Of(60));
 
-                await db.Rooms.AddAsync(singleRoom);
-                await db.Rooms.AddAsync(standardRoom);
-                await db.Rooms.AddAsync(suiteRoom);
+                await db.RoomTypes.AddAsync(singleRoom);
+                await db.RoomTypes.AddAsync(standardRoom);
+                await db.RoomTypes.AddAsync(suiteRoom);
                 await db.SaveChangesAsync();
 
                 suiteRoom.AddFacility(FacilityFactory.CreateRoomFacility("Minibar", Euros.Of(5), suiteRoom.Id));
@@ -55,17 +55,17 @@ namespace Infrastructure
                 int roomNumber = 1;
                 for (int i = 0; i < 5; i++)
                 {
-                    hotel.AddRoomItem(new RoomItem(singleRoom.Id, 0, roomNumber));
+                    hotel.AddRoom(new Room(singleRoom.Id, 0, roomNumber));
                     roomNumber++;
-                    hotel.AddRoomItem(new RoomItem(singleRoom.Id, 1, roomNumber));
+                    hotel.AddRoom(new Room(singleRoom.Id, 1, roomNumber));
                     roomNumber++;
-                    hotel.AddRoomItem(new RoomItem(standardRoom.Id, 0, roomNumber));
+                    hotel.AddRoom(new Room(standardRoom.Id, 0, roomNumber));
                     roomNumber++;
-                    hotel.AddRoomItem(new RoomItem(standardRoom.Id, 1, roomNumber));
+                    hotel.AddRoom(new Room(standardRoom.Id, 1, roomNumber));
                     roomNumber++;
-                    hotel.AddRoomItem(new RoomItem(suiteRoom.Id, 0, roomNumber));
+                    hotel.AddRoom(new Room(suiteRoom.Id, 0, roomNumber));
                     roomNumber++;
-                    hotel.AddRoomItem(new RoomItem(suiteRoom.Id, 1, roomNumber));
+                    hotel.AddRoom(new Room(suiteRoom.Id, 1, roomNumber));
                     roomNumber++;
                 }
 
@@ -78,27 +78,27 @@ namespace Infrastructure
         private static async Task EnsureReservationsAsync(ApplicationDbContext db, long hotelId)
         {
             Hotel hotel = await db.Hotels.FindAsync(hotelId);
-            if (hotel != null && !db.Reservations.Any() && hotel.RoomItems.Any())
+            if (hotel != null && !db.Reservations.Any() && hotel.Rooms.Any())
             {
-                var singleRoomItemId = hotel.RoomItems.Where(r => r.Room.Type == "Single").Select(r => r.Id).FirstOrDefault();
-                if (singleRoomItemId > 0)
+                var singleRoomId = hotel.Rooms.Where(r => r.RoomType.Type == "Single").Select(r => r.Id).FirstOrDefault();
+                if (singleRoomId > 0)
                 {
                     var customer = new Customer("Michael", "Smith", "00444567123");
-                    db.Reservations.Add(new Reservation(singleRoomItemId, customer, DateTime.Today.AddDays(1), DateTime.Today.AddDays(3)));
+                    db.Reservations.Add(new Reservation(singleRoomId, customer, DateTime.Today.AddDays(1), DateTime.Today.AddDays(3)));
                 }
 
-                var standardRoomItemId = hotel.RoomItems.Where(r => r.Room.Type == "Standard").Select(r => r.Id).FirstOrDefault();
-                if (standardRoomItemId > 0)
+                var standardRoomId = hotel.Rooms.Where(r => r.RoomType.Type == "Standard").Select(r => r.Id).FirstOrDefault();
+                if (standardRoomId > 0)
                 {
                     var customer = new Customer("Vanesa", "Jackson", "00442567188");
-                    db.Reservations.Add(new Reservation(standardRoomItemId, customer, DateTime.Today.AddDays(-1), DateTime.Today.AddDays(7)));
+                    db.Reservations.Add(new Reservation(standardRoomId, customer, DateTime.Today.AddDays(-1), DateTime.Today.AddDays(7)));
                 }
 
-                var suiteRoomItemId = hotel.RoomItems.Where(r => r.Room.Type == "Suite").Select(r => r.Id).FirstOrDefault();
-                if (suiteRoomItemId > 0)
+                var suiteRoomId = hotel.Rooms.Where(r => r.RoomType.Type == "Suite").Select(r => r.Id).FirstOrDefault();
+                if (suiteRoomId > 0)
                 {
                     var customer = new Customer("Max", "Donovan", "00442567188");
-                    db.Reservations.Add(new Reservation(suiteRoomItemId, customer, DateTime.Today.AddDays(-3), DateTime.Today.AddDays(-1)));
+                    db.Reservations.Add(new Reservation(suiteRoomId, customer, DateTime.Today.AddDays(-3), DateTime.Today.AddDays(-1)));
                 }
 
                 await db.SaveChangesAsync();

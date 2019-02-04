@@ -31,7 +31,7 @@ namespace UnitTests.Entities
             Assert.Equal("name", roomFacility.Name);
             Assert.Equal(Euros.Of(5m), roomFacility.UnitPrice);
             Assert.True(roomFacility.FreeOfCharge);
-            Assert.Equal(1, roomFacility.RoomId);
+            Assert.Equal(1, roomFacility.RoomTypeId);
         }
     }
 }
