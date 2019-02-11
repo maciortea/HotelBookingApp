@@ -5,7 +5,7 @@ using Xunit;
 
 namespace UnitTests.Entities
 {
-    public class RoomItemTest
+    public class RoomTest
     {
         [Fact]
         public void Constructor_WithInvalidArguments_ShouldThrowContractException()
