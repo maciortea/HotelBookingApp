@@ -57,10 +57,10 @@ namespace Web
 
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-            services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<IHotelRepository, HotelRepository>();
             services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
             services.AddScoped<IReservationService, ReservationService>();
+            services.AddScoped<IHotelService, HotelService>();
             services.AddScoped<IPriceCalculator, PriceCalculator>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

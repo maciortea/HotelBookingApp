@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entities.ReservationAggregate;
 using ApplicationCore.Interfaces;
+using ApplicationCore.Specifications;
 using CSharpFunctionalExtensions;
 using System;
 using System.Collections.Generic;
@@ -10,17 +11,33 @@ namespace ApplicationCore.Services
     public class ReservationService : IReservationService
     {
         private readonly IAppLogger<ReservationService> _logger;
-        private readonly IReservationRepository _reservationRepository;
+        private readonly IRepository<Reservation> _reservationRepository;
 
-        public ReservationService(IAppLogger<ReservationService> logger, IReservationRepository reservationRepository)
+        public ReservationService(IAppLogger<ReservationService> logger, IRepository<Reservation> reservationRepository)
         {
             _reservationRepository = reservationRepository;
             _logger = logger;
         }
 
-        public async Task<Result<IReadOnlyCollection<Reservation>>> ListAllAsync(long hotelId)
+        public async Task<IReadOnlyCollection<Reservation>> ListAllAsync(long hotelId)
         {
-            return await _reservationRepository.GetAllByHotelIdAsync(hotelId);
+            var specification = new AllReservationsByHotelIdIncludingRoomTypeSpecification(hotelId);
+            IReadOnlyCollection<Reservation> reservations = await _reservationRepository.ListAsync(specification);
+            return reservations;
+        }
+
+        public async Task<Result<Reservation>> GetFullByIdAsync(long id)
+        {
+            var specification = new ReservationWithFullMembersSpecification(id);
+            Reservation reservation = await _reservationRepository.FirstOrDefaultAsync(specification);
+            if (reservation == null)
+            {
+                string message = $"Reservation with id '{id}' doesn't exists";
+                _logger.LogInformation(message);
+                return Result.Fail<Reservation>(message);
+            }
+
+            return Result.Ok(reservation);
         }
 
         public async Task<Result> CreateAsync(Reservation reservation)

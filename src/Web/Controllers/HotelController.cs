@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Entities.HotelAggregate;
-using ApplicationCore.Interfaces;
+﻿using ApplicationCore.Interfaces;
 using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,13 +15,16 @@ namespace Web.Controllers
     {
         private readonly UserManager<HotelPersonal> _userManager;
         private readonly IHotelRepository _hotelRepository;
+        private readonly IHotelService _hotelService;
 
         public HotelController(
             UserManager<HotelPersonal> userManager,
-            IHotelRepository hotelRepository)
+            IHotelRepository hotelRepository,
+            IHotelService hotelService)
         {
             _userManager = userManager;
             _hotelRepository = hotelRepository;
+            _hotelService = hotelService;
         }
 
         [AllowAnonymous]
@@ -41,14 +43,19 @@ namespace Web.Controllers
                 throw new ApplicationException($"Unable to load user with id '{User.Identity.Name}'.");
             }
             
-            Hotel hotel = await _hotelRepository.GetFullByIdAsync(user.HotelId);
+            var hotelResult = await _hotelService.GetFullByIdAsync(user.HotelId);
+            if (hotelResult.IsFailure)
+            {
+                throw new ApplicationException(hotelResult.Error);
+            }
+
             var roomTypesToCountAndPrice = await _hotelRepository.GetRoomTypesToCountAndPrice(user.HotelId);
 
             var model = new HotelViewModel
             {
-                Name = hotel.Name,
-                FullAddress = hotel.Address.Display,
-                Facilities = hotel.Facilities.Select(f => f.Name).ToList(),
+                Name = hotelResult.Value.Name,
+                FullAddress = hotelResult.Value.Address.Display,
+                Facilities = hotelResult.Value.Facilities.Select(f => f.Name).ToList(),
                 RoomTypesToCountAndPrice = roomTypesToCountAndPrice
             };
 

@@ -7,7 +7,8 @@ namespace ApplicationCore.Interfaces
 {
     public interface IReservationService
     {
-        Task<Result<IReadOnlyCollection<Reservation>>> ListAllAsync(long hotelId);
+        Task<IReadOnlyCollection<Reservation>> ListAllAsync(long hotelId);
+        Task<Result<Reservation>> GetFullByIdAsync(long id);
         Task<Result> CreateAsync(Reservation reservation);
         Task<Result> CheckoutAsync(long id);
         Task<Result> CancelAsync(long id);

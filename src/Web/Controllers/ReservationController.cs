@@ -19,24 +19,21 @@ namespace Web.Controllers
     public class ReservationController : Controller
     {
         private readonly UserManager<HotelPersonal> _userManager;
-        private readonly IReservationRepository _reservationRepository;
         private readonly IReservationService _reservationService;
-        private readonly IHotelRepository _hotelRepository;
+        private readonly IHotelService _hotelService;
         private readonly IRoomTypeRepository _roomTypeRepository;
         private readonly IPriceCalculator _priceCalculator;
 
         public ReservationController(
             UserManager<HotelPersonal> userManager,
-            IReservationRepository reservationRepository,
             IReservationService reservationService,
-            IHotelRepository hotelRepository,
+            IHotelService hotelService,
             IRoomTypeRepository roomTypeRepository,
             IPriceCalculator priceCalculator)
         {
             _userManager = userManager;
-            _reservationRepository = reservationRepository;
             _reservationService = reservationService;
-            _hotelRepository = hotelRepository;
+            _hotelService = hotelService;
             _roomTypeRepository = roomTypeRepository;
             _priceCalculator = priceCalculator;
         }
@@ -55,13 +52,9 @@ namespace Web.Controllers
                 throw new ApplicationException($"User with id '{User.Identity.Name}' is not part of any hotel.");
             }
 
-            var reservationsResult = await _reservationService.ListAllAsync(user.HotelId);
-            if (reservationsResult.IsFailure)
-            {
-                throw new ApplicationException(reservationsResult.Error);
-            }
+            var reservations = await _reservationService.ListAllAsync(user.HotelId);
 
-            var model = reservationsResult.Value
+            var model = reservations
                 .Select(r => new ReservationViewModel(DateTime.Today)
                 {
                     Id = r.Id,
@@ -103,13 +96,13 @@ namespace Web.Controllers
                 throw new ApplicationException($"Unable to load user with id '{User.Identity.Name}'.");
             }
 
-            var availableRoomsResult = await _hotelRepository.GetAvailableRoomsByPeriodAsync(user.HotelId, checkinDate, checkoutDate);
+            var availableRoomsResult = await _hotelService.GetAvailableRoomsByPeriodAsync(user.HotelId, checkinDate, checkoutDate);
             if (availableRoomsResult.IsFailure)
             {
                 throw new ApplicationException(availableRoomsResult.Error);
             }
 
-            var hotelFacilitiesResult = await _hotelRepository.GetFacilitiesByHotelIdAsync(user.HotelId);
+            var hotelFacilitiesResult = await _hotelService.GetFacilitiesByHotelIdAsync(user.HotelId);
             if (hotelFacilitiesResult.IsFailure)
             {
                 throw new ApplicationException(availableRoomsResult.Error);
@@ -157,7 +150,7 @@ namespace Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Checkout(long id)
         {
-            var reservationResult = await _reservationRepository.GetFullByIdAsync(id);
+            var reservationResult = await _reservationService.GetFullByIdAsync(id);
             if (reservationResult.IsFailure)
             {
                 throw new ApplicationException(reservationResult.Error);
@@ -208,7 +201,7 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> CalculatePrice(long id, long[] roomFacilityIds)
         {
-            var reservationResult = await _reservationRepository.GetFullByIdAsync(id);
+            var reservationResult = await _reservationService.GetFullByIdAsync(id);
             if (reservationResult.IsFailure)
             {
                 throw new ApplicationException(reservationResult.Error);
