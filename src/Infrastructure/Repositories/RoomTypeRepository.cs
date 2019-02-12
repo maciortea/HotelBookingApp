@@ -11,43 +11,22 @@ namespace Infrastructure.Repositories
 {
     public class RoomTypeRepository : EfRepository<RoomType>, IRoomTypeRepository
     {
-        private readonly IAppLogger<RoomTypeRepository> _logger;
-
-        public RoomTypeRepository(ApplicationDbContext db, IAppLogger<RoomTypeRepository> logger) : base(db)
+        public RoomTypeRepository(ApplicationDbContext db)
+            : base(db)
         {
-            _logger = logger;
         }
 
-        public async Task<Result<IReadOnlyCollection<RoomFacility>>> GetFacilitiesByRoomIdAsync(long roomId)
+        public async Task<IReadOnlyCollection<RoomFacility>> GetFacilitiesByRoomIdAsync(long roomId)
         {
-            try
-            {
-                IReadOnlyCollection<RoomFacility> facilities = await _db.RoomTypes.Where(r => r.Id == roomId).SelectMany(r => r.Facilities).ToListAsync();
-                return Result.Ok(facilities);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return Result.Fail<IReadOnlyCollection<RoomFacility>>(ex.Message);
-            }
+            return await _db.RoomTypes.Where(r => r.Id == roomId).SelectMany(r => r.Facilities).ToListAsync();
         }
 
-        public async Task<Result<IReadOnlyCollection<RoomFacility>>> GetFacilitiesByIds(long roomId, long[] facilityIds)
+        public async Task<IReadOnlyCollection<RoomFacility>> GetFacilitiesByIds(long roomId, long[] facilityIds)
         {
-            try
-            {
-                IReadOnlyCollection<RoomFacility> facilities = await _db.RoomTypes
-                    .Where(r => r.Id == roomId)
-                    .SelectMany(r => r.Facilities.Where(f => facilityIds.Contains(f.Id)))
-                    .ToListAsync();
-
-                return Result.Ok(facilities);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return Result.Fail<IReadOnlyCollection<RoomFacility>>(ex.Message);
-            }
+            return await _db.RoomTypes
+                .Where(r => r.Id == roomId)
+                .SelectMany(r => r.Facilities.Where(f => facilityIds.Contains(f.Id)))
+                .ToListAsync();
         }
     }
 }

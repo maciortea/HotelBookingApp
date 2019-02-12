@@ -29,16 +29,24 @@ namespace ApplicationCore.Services
 
         public async Task<Result<Hotel>> GetFullByIdAsync(long id)
         {
-            var specification = new HotelWithFullMembersSpecification(id);
-            Hotel hotel = await _hotelRepository.SingleOrDefaultAsync(specification);
-            if (hotel == null)
+            try
             {
-                string message = $"Hote with id '{id}' doesn't exists";
-                _logger.LogInformation(message);
-                return Result.Fail<Hotel>(message);
-            }
+                var specification = new HotelWithFullMembersSpecification(id);
+                Hotel hotel = await _hotelRepository.SingleOrDefaultAsync(specification);
+                if (hotel == null)
+                {
+                    string message = $"Hote with id '{id}' doesn't exists";
+                    _logger.LogInformation(message);
+                    return Result.Fail<Hotel>(message);
+                }
 
-            return Result.Ok(hotel);
+                return Result.Ok(hotel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Result.Fail<Hotel>(ex.Message);
+            }
         }
 
         public async Task<Result<List<Room>>> GetAvailableRoomsByPeriodAsync(long hotelId, DateTime fromDate, DateTime toDate)
@@ -82,9 +90,18 @@ namespace ApplicationCore.Services
             }
         }
 
-        public async Task<Dictionary<string, Tuple<int, decimal>>> GetRoomTypesToCountAndPrice(long hotelId)
+        public async Task<Result<Dictionary<string, Tuple<int, decimal>>>> GetRoomTypesToCountAndPrice(long hotelId)
         {
-            return await _hotelRepository.GetRoomTypesToCountAndPrice(hotelId);
+            try
+            {
+                var roomTypesToCountAndPrice = await _hotelRepository.GetRoomTypesToCountAndPrice(hotelId);
+                return Result.Ok(roomTypesToCountAndPrice);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Result.Fail<Dictionary<string, Tuple<int, decimal>>>(ex.Message);
+            }
         }
 
         private async Task<long[]> GetBookedRoomItemIdsByHotelIdAndPeriodAsync(long hotelId, DateTime fromDate, DateTime toDate)

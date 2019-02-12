@@ -19,25 +19,41 @@ namespace ApplicationCore.Services
             _logger = logger;
         }
 
-        public async Task<IReadOnlyCollection<Reservation>> ListAllAsync(long hotelId)
+        public async Task<Result<IReadOnlyCollection<Reservation>>> ListAllAsync(long hotelId)
         {
-            var specification = new AllReservationsByHotelIdIncludingRoomTypeSpecification(hotelId);
-            IReadOnlyCollection<Reservation> reservations = await _reservationRepository.ListAsync(specification);
-            return reservations;
+            try
+            {
+                var specification = new AllReservationsByHotelIdIncludingRoomTypeSpecification(hotelId);
+                IReadOnlyCollection<Reservation> reservations = await _reservationRepository.ListAsync(specification);
+                return Result.Ok(reservations);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Result.Fail<IReadOnlyCollection<Reservation>>(ex.Message);
+            }
         }
 
         public async Task<Result<Reservation>> GetFullByIdAsync(long id)
         {
-            var specification = new ReservationWithFullMembersSpecification(id);
-            Reservation reservation = await _reservationRepository.FirstOrDefaultAsync(specification);
-            if (reservation == null)
+            try
             {
-                string message = $"Reservation with id '{id}' doesn't exists";
-                _logger.LogInformation(message);
-                return Result.Fail<Reservation>(message);
-            }
+                var specification = new ReservationWithFullMembersSpecification(id);
+                Reservation reservation = await _reservationRepository.FirstOrDefaultAsync(specification);
+                if (reservation == null)
+                {
+                    string message = $"Reservation with id '{id}' doesn't exists";
+                    _logger.LogInformation(message);
+                    return Result.Fail<Reservation>(message);
+                }
 
-            return Result.Ok(reservation);
+                return Result.Ok(reservation);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Result.Fail<Reservation>(ex.Message);
+            }
         }
 
         public async Task<Result> CreateAsync(Reservation reservation)

@@ -52,9 +52,13 @@ namespace Web.Controllers
                 throw new ApplicationException($"User with id '{User.Identity.Name}' is not part of any hotel.");
             }
 
-            var reservations = await _reservationService.ListAllAsync(user.HotelId);
+            var reservationsResult = await _reservationService.ListAllAsync(user.HotelId);
+            if (reservationsResult.IsFailure)
+            {
+                throw new ApplicationException(reservationsResult.Error);
+            }
 
-            var model = reservations
+            var model = reservationsResult.Value
                 .Select(r => new ReservationViewModel(DateTime.Today)
                 {
                     Id = r.Id,
@@ -156,11 +160,7 @@ namespace Web.Controllers
                 throw new ApplicationException(reservationResult.Error);
             }
 
-            var roomFacilitiesResult = await _roomTypeRepository.GetFacilitiesByRoomIdAsync(reservationResult.Value.Room.RoomTypeId);
-            if (roomFacilitiesResult.IsFailure)
-            {
-                throw new ApplicationException(roomFacilitiesResult.Error);
-            }
+            var roomFacilities = await _roomTypeRepository.GetFacilitiesByRoomIdAsync(reservationResult.Value.Room.RoomTypeId);
 
             var model = new ReservationCheckoutViewModel
             {
@@ -177,7 +177,7 @@ namespace Web.Controllers
                         FreeOfCharge = f.HotelFacility.FreeOfCharge
                     })
                     .ToList(),
-                RoomFacilities = roomFacilitiesResult.Value
+                RoomFacilities = roomFacilities
                     .Select(f => new FacilityViewModel
                     {
                         Id = f.Id,
@@ -207,16 +207,11 @@ namespace Web.Controllers
                 throw new ApplicationException(reservationResult.Error);
             }
 
-            var roomFacilitiesResult = await _roomTypeRepository.GetFacilitiesByIds(reservationResult.Value.Room.RoomTypeId, roomFacilityIds);
-            if (roomFacilitiesResult.IsFailure)
-            {
-                throw new ApplicationException(roomFacilitiesResult.Error);
-            }
-
+            var roomFacilities = await _roomTypeRepository.GetFacilitiesByIds(reservationResult.Value.Room.RoomTypeId, roomFacilityIds);
             int noOfNights = reservationResult.Value.CalculateCheckoutNoOfNights(DateTime.Today);
 
             var facilities = new List<Facility>();
-            facilities.AddRange(roomFacilitiesResult.Value);
+            facilities.AddRange(roomFacilities);
             facilities.AddRange(reservationResult.Value.Facilities.Select(f => f.HotelFacility));
             decimal price = _priceCalculator.CalculatePrice(reservationResult.Value.Room.RoomType, facilities, noOfNights);
 
