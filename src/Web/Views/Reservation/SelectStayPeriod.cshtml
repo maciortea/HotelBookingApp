@@ -34,6 +34,15 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-datepicker.css" />
+        <script src="~/lib/bootstrap/dist/js/bootstrap-datepicker.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-datepicker.min.css" />
+        <script src="~/lib/bootstrap/dist/js/bootstrap-datepicker.min.js"></script>
+    </environment>
+
     <script>
         $(document).ready(function () {
             $('#FromDate').datepicker({
