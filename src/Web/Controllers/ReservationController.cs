@@ -76,14 +76,7 @@ namespace Web.Controllers
         [HttpGet]
         public IActionResult SelectStayPeriod()
         {
-            var model = new ReservationPeriodViewModel(DateTime.Now, DateTime.Now.AddDays(1));
-            return View(model);
-        }
-
-        [HttpPost]
-        public IActionResult SelectStayPeriod(ReservationPeriodViewModel model)
-        {
-            return RedirectToAction("Create", new { CheckinDate = model.CheckinDate.Date, CheckoutDate = model.CheckoutDate.Date });
+            return View();
         }
 
         [HttpGet]

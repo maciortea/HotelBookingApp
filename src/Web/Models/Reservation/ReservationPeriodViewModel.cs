@@ -8,13 +8,13 @@ namespace Web.Models.Reservation
     {
         [DisplayName("Check-in date")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         [Required]
         public DateTime CheckinDate { get; set; }
 
         [DisplayName("Check-out date")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         [Required]
         public DateTime CheckoutDate { get; set; }
 

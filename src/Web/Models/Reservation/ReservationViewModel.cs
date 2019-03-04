@@ -20,7 +20,7 @@ namespace Web.Models.Reservation
 
         [DisplayName("Created on")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         public DateTime CreationDate { get; set; }
 
         public int Floor { get; set; }

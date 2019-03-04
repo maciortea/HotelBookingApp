@@ -1,6 +1,4 @@
-﻿@model Web.Models.Reservation.ReservationPeriodViewModel
-
-@{
+﻿@{
     ViewData["Title"] = "Select stay period";
 }
 
@@ -8,43 +6,50 @@
 
 <hr />
 
-<form asp-action="SelectStayPeriod">
-    @Html.HiddenFor(m => m.CheckinDate)
-    @Html.HiddenFor(m => m.CheckoutDate)
-
-    <div class="row form-group">
-        <div class="col-sm-1">
-            <label for="FromDate">From date</label>
-        </div>
-        <div class="col-sm-2">
-            <input type="text" class="form-control" id="FromDate" value="@Model.CheckinDate.ToString("dd-MM-yyyy")" readonly />
-        </div>
-        <div class="col-sm-1">
-            <label for="ToDate">to date</label>
-        </div>
-        <div class="col-sm-2">
-            <input type="text" class="form-control" id="ToDate" value="@Model.CheckoutDate.ToString("dd-MM-yyyy")" readonly />
-        </div>
+<div class="row">
+    <div class="col-sm-1">
+        <label for="FromDate">From date</label>
     </div>
-    <div class="row">
-        <button type="submit" class="btn">Continue to reservation</button>
+    <div class="col-sm-2">
+        <input type="text" class="form-control" id="FromDate" readonly />
     </div>
-</form>
+    <div class="col-sm-1">
+        <label for="ToDate">to date</label>
+    </div>
+    <div class="col-sm-2">
+        <input type="text" class="form-control" id="ToDate" readonly />
+    </div>
+</div>
+<div class="row" style="margin-top: 15px;">
+    <div class="col-sm-1">
+        <button type="button" id="ContinueToReservation" class="btn">Continue to reservation</button>
+    </div>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-datepicker.css" />
+        <script src="~/lib/moment.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap-datepicker.js"></script>
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-datepicker.min.css" />
+        <script src="~/lib/moment.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap-datepicker.min.js"></script>
     </environment>
 
     <script>
+        const DateFormat = 'YYYY-MM-DD';
+        const DisplayDateFormat = 'DD-MM-YYYY';
+        var checkinDate = moment();
+        var checkoutDate = moment().add(1, 'days');
+
         $(document).ready(function () {
+            $('#FromDate').val(checkinDate.format(DisplayDateFormat));
+            $('#ToDate').val(checkoutDate.format(DisplayDateFormat));
+
             $('#FromDate').datepicker({
                 format: 'dd-mm-yyyy',
                 autoclose: true,
@@ -52,7 +57,7 @@
                 startDate: '0d'
             }).on('changeDate', function () {
                 var fromDate = $('#FromDate').datepicker('getDate');
-                $('#CheckinDate').val(fromDate.toLocaleDateString());
+                checkinDate = moment(fromDate);
                 var toDate = $('#ToDate').datepicker('getDate');
 
                 fromDate.setDate(fromDate.getDate() + 1);
@@ -60,7 +65,7 @@
 
                 if (fromDate >= toDate) {
                     $('#ToDate').datepicker('setDate', fromDate);
-                    $('#CheckoutDate').val(fromDate.toLocaleDateString());
+                    checkoutDate = moment(fromDate);
                 }
             });
 
@@ -74,7 +79,12 @@
                 startDate: minEndDate
             }).on('changeDate', function () {
                 var toDate = $('#ToDate').datepicker('getDate');
-                $('#CheckoutDate').val(toDate.toLocaleDateString());
+                checkoutDate = moment(toDate);
+            });
+
+            $('#ContinueToReservation').click(function (e) {
+                e.preventDefault();
+                window.location.assign('/Reservation/Create?checkinDate=' + checkinDate.format(DateFormat) + '&checkoutDate=' + checkoutDate.format(DateFormat));
             });
         });
     </script>
